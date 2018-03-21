@@ -2,7 +2,7 @@ const Paddle = require("./paddle");
 const Ball = require("./ball");
 const Util = require("./util");
 
-class Game {
+class RoboPong {
   constructor() {
     this.paddle = [];
     this.ball = [];
@@ -14,8 +14,19 @@ class Game {
     this.ball.push(object);
   }
 
+  addPaddles() {
+    const paddle = new Paddle({
+      type: 'L',
+      game: this
+    });
+
+    this.add(ship);
+
+    return ship;
+  }
+
   addAsteroids() {
-    this.add(new Ball({ game: this }));
+    this.add(new Ball({ robo_pong: this }));
   }
 
   allObjects() {
@@ -38,9 +49,9 @@ class Game {
   }
 
   draw(ctx) {
-    ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
-    ctx.fillStyle = Game.BG_COLOR;
-    ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
+    ctx.clearRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
+    ctx.fillStyle = RoboPong.BG_COLOR;
+    ctx.fillRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
 
     this.allObjects().forEach((object) => {
       object.draw(ctx);
@@ -49,7 +60,7 @@ class Game {
 
   isOutOfBounds(pos) {
     return (pos[0] < 0) ||
-      (pos[0] > Game.DIM_X);
+      (pos[0] > RoboPong.DIM_X);
   }
 
   moveObjects(delta) {
@@ -58,8 +69,8 @@ class Game {
 
   randomPosition() {
     return [
-      Game.DIM_X * Math.random(),
-      Game.DIM_Y * Math.random()
+      RoboPong.DIM_X * Math.random(),
+      RoboPong.DIM_Y * Math.random()
     ];
   }
 
@@ -80,15 +91,14 @@ class Game {
 
   wrap(pos) {
     return [
-      Util.wrap(pos[0], Game.DIM_X), Util.wrap(pos[1], Game.DIM_Y)
+      Util.wrap(pos[0], RoboPong.DIM_X), Util.wrap(pos[1], RoboPong.DIM_Y)
     ];
   }
 }
 
-Game.BG_COLOR = "#000000";
-Game.DIM_X = 1000;
-Game.DIM_Y = 600;
-Game.FPS = 32;
-Game.NUM_ASTEROIDS = 10;
+RoboPong.BG_COLOR = "#000000";
+RoboPong.DIM_X = 1000;
+RoboPong.DIM_Y = 600;
+RoboPong.FPS = 32;
 
-module.exports = Game;
+module.exports = RoboPong;

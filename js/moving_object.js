@@ -6,7 +6,7 @@ class MovingObject {
     this.vel = options.vel;
     this.radius = options.radius;
     this.color = options.color;
-    this.game = options.game;
+    this.robo_pong = options.robo_pong;
     this.isWrappable = true;
   }
 
@@ -40,9 +40,9 @@ class MovingObject {
 
     this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
 
-    if (this.game.isOutOfBounds(this.pos)) {
+    if (this.robo_pong.isOutOfBounds(this.pos)) {
       if (this.isWrappable) {
-        this.pos = this.game.wrap(this.pos);
+        this.pos = this.robo_pong.wrap(this.pos);
       } else {
         this.remove();
       }
@@ -50,7 +50,7 @@ class MovingObject {
   }
 
   remove() {
-    this.game.remove(this);
+    this.robo_pong.remove(this);
   }
 }
 

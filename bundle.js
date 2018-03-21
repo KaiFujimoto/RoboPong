@@ -71,7 +71,7 @@ const Paddle = __webpack_require__(!(function webpackMissingModule() { var e = n
 const Ball = __webpack_require__(2);
 const Util = __webpack_require__(1);
 
-class Game {
+class RoboPong {
   constructor() {
     this.paddle = [];
     this.ball = [];
@@ -83,8 +83,19 @@ class Game {
     this.ball.push(object);
   }
 
+  addPaddles() {
+    const paddle = new Paddle({
+      type: 'L',
+      game: this
+    });
+
+    this.add(ship);
+
+    return ship;
+  }
+
   addAsteroids() {
-    this.add(new Ball({ game: this }));
+    this.add(new Ball({ robo_pong: this }));
   }
 
   allObjects() {
@@ -107,9 +118,9 @@ class Game {
   }
 
   draw(ctx) {
-    ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
-    ctx.fillStyle = Game.BG_COLOR;
-    ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
+    ctx.clearRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
+    ctx.fillStyle = RoboPong.BG_COLOR;
+    ctx.fillRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
 
     this.allObjects().forEach((object) => {
       object.draw(ctx);
@@ -118,7 +129,7 @@ class Game {
 
   isOutOfBounds(pos) {
     return (pos[0] < 0) ||
-      (pos[0] > Game.DIM_X);
+      (pos[0] > RoboPong.DIM_X);
   }
 
   moveObjects(delta) {
@@ -127,8 +138,8 @@ class Game {
 
   randomPosition() {
     return [
-      Game.DIM_X * Math.random(),
-      Game.DIM_Y * Math.random()
+      RoboPong.DIM_X * Math.random(),
+      RoboPong.DIM_Y * Math.random()
     ];
   }
 
@@ -149,18 +160,17 @@ class Game {
 
   wrap(pos) {
     return [
-      Util.wrap(pos[0], Game.DIM_X), Util.wrap(pos[1], Game.DIM_Y)
+      Util.wrap(pos[0], RoboPong.DIM_X), Util.wrap(pos[1], RoboPong.DIM_Y)
     ];
   }
 }
 
-Game.BG_COLOR = "#000000";
-Game.DIM_X = 1000;
-Game.DIM_Y = 600;
-Game.FPS = 32;
-Game.NUM_ASTEROIDS = 10;
+RoboPong.BG_COLOR = "#000000";
+RoboPong.DIM_X = 1000;
+RoboPong.DIM_Y = 600;
+RoboPong.FPS = 32;
 
-module.exports = Game;
+module.exports = RoboPong;
 
 
 /***/ }),
@@ -229,7 +239,7 @@ const DEFAULTS = {
 class Ball extends MovingObject {
   constructor(options = {}) {
     options.color = DEFAULTS.COLOR;
-    options.pos = options.pos || options.game.randomPosition();
+    options.pos = options.pos || options.robo_pong.randomPosition();
     options.radius = DEFAULTS.RADIUS;
     options.vel = options.vel || Util.randomVec(DEFAULTS.SPEED);
     super(options);
@@ -265,7 +275,7 @@ class MovingObject {
     this.vel = options.vel;
     this.radius = options.radius;
     this.color = options.color;
-    this.game = options.game;
+    this.robo_pong = options.robo_pong;
     this.isWrappable = true;
   }
 
@@ -299,9 +309,9 @@ class MovingObject {
 
     this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
 
-    if (this.game.isOutOfBounds(this.pos)) {
+    if (this.robo_pong.isOutOfBounds(this.pos)) {
       if (this.isWrappable) {
-        this.pos = this.game.wrap(this.pos);
+        this.pos = this.robo_pong.wrap(this.pos);
       } else {
         this.remove();
       }
@@ -309,7 +319,7 @@ class MovingObject {
   }
 
   remove() {
-    this.game.remove(this);
+    this.robo_pong.remove(this);
   }
 }
 

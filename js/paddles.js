@@ -1,19 +1,19 @@
 const Coordinate = require('./coordinates');
-const MovingObject = require('./moving_object');
+const RoboPong = require('./robo_pong');
 
 class Paddle {
-  constructor(type, board) {
+  constructor(type, robo_pong) {
     this.direction = "U";
     this.position = [];
     this.type = type;
-    this.board = board;
+    this.robo_pong = robo_pong;
   }
 
   positionSetter() {
     if (this.type === 'L') {
-      this.position = new Coordinate(0, Math.floor(board.dim/2));
+      this.position = new Coordinate(0, Math.floor(robo_pong.DIM_Y/2));
     } else {
-      this.position = new Coordinate(board.dim, Math.floor(board.dim/2));
+      this.position = new Coordinate(robo_pong.DIM_X, Math.floor(robo_pong.DIM_Y/2));
     }
   }
 

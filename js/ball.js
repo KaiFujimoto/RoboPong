@@ -11,7 +11,7 @@ const DEFAULTS = {
 class Ball extends MovingObject {
   constructor(options = {}) {
     options.color = DEFAULTS.COLOR;
-    options.pos = options.pos || options.game.randomPosition();
+    options.pos = options.pos || options.robo_pong.randomPosition();
     options.radius = DEFAULTS.RADIUS;
     options.vel = options.vel || Util.randomVec(DEFAULTS.SPEED);
     super(options);
