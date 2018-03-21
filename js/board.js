@@ -4,7 +4,8 @@ const Coordinate = require('./coordinates');
 class Board {
   constructor(dim) {
     this.dim = dim;
-    this.paddle = new Paddle('L', dim);
+    this.l_paddle = new Paddle('L', dim);
+    this.r_paddle = new Paddle('R', dim);
   }
 
   static newBoard(dim) {
@@ -26,7 +27,18 @@ class Board {
   }
 
   render() {
+    const grid = Board.newBoard(this.dim);
 
+    this.l_paddle.position.forEach( position => {
+      grid[position.x][position.y] = Paddle.SYMBOL[0];
+    });
+
+    this.r_paddle.position.forEach( position => {
+      grid[position.x][position.y] = Paddle.SYMBOL[1];
+    });
+
+    const rowStrs = [];
+    grid.map( row => row.join("") ).join("\n");
   }
 }
 

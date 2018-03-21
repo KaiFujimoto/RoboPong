@@ -35,4 +35,6 @@ Paddle.TYPES = {
   "R": 1
 };
 
+Paddle.SYMBOL = ['l', 'r'];
+
 module.exports = Paddle;
