@@ -1,11 +1,7 @@
 module.exports = {
-  entry: "./js/robo_pong.js",
+  entry: "./js/entry.js",
   output: {
-    path: __dirname,
-    filename: "bundle.js"
+    filename: "./bundle.js"
   },
   devtool: 'source-map',
-  resolve: {
-    extensions: [".js"]
-  }
 };

@@ -4,17 +4,15 @@ class Coordinate {
     this.y = y;
   }
 
-  plus(direction) {
-    return new Coordinate(this.x + direction.x, this.y + direction.y);
-  }
+  equals(position) {
+     return (this.x == position.x) && (this.y == position.y);
+ }
 
-  equals(direction) {
-      return (this.x == direction.x) && (this.y == direction.y);
-  }
+ isOpposite(position) {
+   return (this.x == (-1 * position.x)) && (this.y == (-1 * position.y));
+ }
 
-  isOpposite(direction) {
-    return (this.x == (-1 * direction.x)) && (this.y == (-1 * direction.y));
-  }
+ plus(position) {
+   return new Coord(this.x + position.x, this.y + position.y);
+ }
 }
-
-module.exports = Coordinate;

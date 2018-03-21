@@ -1,6 +1,6 @@
 const Util = require("./util");
 const MovingObject = require("./moving_object");
-const Paddle = require("./paddle");
+const Paddle = require("./paddles");
 
 const DEFAULTS = {
   COLOR: "#505050",
@@ -18,18 +18,19 @@ class Ball extends MovingObject {
   }
 
   collideWith(otherObject) {
+    debugger
     if (otherObject instanceof Paddle) {
-      this.relocate();
+      otherObject.relocate();
       return true;
-    } else if (Ball.pos.y === Ball.board.dim ) {
-      this.relocate();
+    } else if (this.pos[0] === 1000) {
+      otherObject.relocate();
       return true;
-    } else if (Ball.pos.y === 0) {
-      this.relocate();
+    } else if (this.pos[1] === 0) {
+      otherObject.relocate();
       return true;
     }
     return false;
   }
 }
 
-module.exports = Asteroid;
+module.exports = Ball;

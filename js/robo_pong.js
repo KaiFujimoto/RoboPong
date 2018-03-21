@@ -1,4 +1,4 @@
-const Paddle = require("./paddle");
+const Paddle = require("./paddles");
 const Ball = require("./ball");
 const Util = require("./util");
 
@@ -15,17 +15,20 @@ class RoboPong {
   }
 
   addPaddles() {
-    const paddle = new Paddle({
+    const paddleL = new Paddle({
       type: 'L',
       game: this
     });
+    this.paddle.push(paddleL);
 
-    this.add(ship);
-
-    return ship;
+    const paddleR = new Paddle({
+      type: 'R',
+      game: this
+    });
+    this.paddle.push(paddleR);
   }
 
-  addAsteroids() {
+  deploy() {
     this.add(new Ball({ robo_pong: this }));
   }
 
@@ -64,7 +67,7 @@ class RoboPong {
   }
 
   moveObjects(delta) {
-    this.ball.move(delta);
+    this.ball[0].move(delta);
   }
 
   randomPosition() {

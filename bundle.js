@@ -60,15 +60,15 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Paddle = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./paddle\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-const Ball = __webpack_require__(2);
+const Paddle = __webpack_require__(2);
+const Ball = __webpack_require__(5);
 const Util = __webpack_require__(1);
 
 class RoboPong {
@@ -84,17 +84,20 @@ class RoboPong {
   }
 
   addPaddles() {
-    const paddle = new Paddle({
+    const paddleL = new Paddle({
       type: 'L',
       game: this
     });
+    this.paddle.push(paddleL);
 
-    this.add(ship);
-
-    return ship;
+    const paddleR = new Paddle({
+      type: 'R',
+      game: this
+    });
+    this.paddle.push(paddleR);
   }
 
-  addAsteroids() {
+  deploy() {
     this.add(new Ball({ robo_pong: this }));
   }
 
@@ -133,7 +136,7 @@ class RoboPong {
   }
 
   moveObjects(delta) {
-    this.ball.move(delta);
+    this.ball[0].move(delta);
   }
 
   randomPosition() {
@@ -226,9 +229,99 @@ module.exports = Util;
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const Coordinate = __webpack_require__(4);
+const RoboPong = __webpack_require__(0);
+
+class Paddle {
+  constructor(type, robo_pong) {
+    this.direction = "U";
+    this.position = [];
+    this.type = type;
+    this.robo_pong = robo_pong;
+  }
+
+  positionSetter() {
+    if (this.type === 'L') {
+      this.position = new Coordinate(0, Math.floor(robo_pong.DIM_Y/2));
+    } else {
+      this.position = new Coordinate(robo_pong.DIM_X, Math.floor(robo_pong.DIM_Y/2));
+    }
+  }
+
+  currentPosition() {
+    this.position.slice(-1);
+  }
+
+  move(direction) {
+    this.position.push(this.position.plus(Paddle.DIRECTIONS[direction]));
+  }
+}
+
+Paddle.DIRECTIONS = {
+  "U": new Coordinate(0, 1),
+  "D": new Coordinate(0, -1)
+};
+
+Paddle.TYPES = {
+  "L": 0,
+  "R": 1
+};
+
+Paddle.SYMBOL = ['l', 'r'];
+
+module.exports = Paddle;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const RoboPong = __webpack_require__(0);
+const RoboPongView = __webpack_require__(7);
+
+document.addEventListener("DOMContentLoaded", () => {
+  const canvasEl = document.getElementById("robopong");
+  canvasEl.width = RoboPong.DIM_X;
+  canvasEl.height = RoboPong.DIM_Y;
+  canvasEl.fillStyle = RoboPong.BG_COLOR;
+
+  const ctx = canvasEl.getContext("2d");
+  const robo_pong = new RoboPong();
+  new RoboPongView(robo_pong, ctx).start();
+});
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+class Coordinate {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  equals(position) {
+     return (this.x == position.x) && (this.y == position.y);
+ }
+
+ isOpposite(position) {
+   return (this.x == (-1 * position.x)) && (this.y == (-1 * position.y));
+ }
+
+ plus(position) {
+   return new Coord(this.x + position.x, this.y + position.y);
+ }
+}
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
 const Util = __webpack_require__(1);
-const MovingObject = __webpack_require__(3);
-const Paddle = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./paddle\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+const MovingObject = __webpack_require__(6);
+const Paddle = __webpack_require__(2);
 
 const DEFAULTS = {
   COLOR: "#505050",
@@ -246,25 +339,26 @@ class Ball extends MovingObject {
   }
 
   collideWith(otherObject) {
+    debugger
     if (otherObject instanceof Paddle) {
-      this.relocate();
+      otherObject.relocate();
       return true;
-    } else if (Ball.pos.y === Ball.board.dim ) {
-      this.relocate();
+    } else if (this.pos[0] === 1000) {
+      otherObject.relocate();
       return true;
-    } else if (Ball.pos.y === 0) {
-      this.relocate();
+    } else if (this.pos[1] === 0) {
+      otherObject.relocate();
       return true;
     }
     return false;
   }
 }
 
-module.exports = Asteroid;
+module.exports = Ball;
 
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Util = __webpack_require__(1);
@@ -303,6 +397,7 @@ class MovingObject {
     // if the computer is busy the time delta will be larger
     // in this case the MovingObject should move farther in this frame
     // velocity of object is how far it should move in 1/60th of a second
+    debugger
     const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
         offsetX = this.vel[0] * velocityScale,
         offsetY = this.vel[1] * velocityScale;
@@ -326,6 +421,71 @@ class MovingObject {
 const NORMAL_FRAME_TIME_DELTA = 1000 / 60;
 
 module.exports = MovingObject;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const RoboPong = __webpack_require__(0);
+
+class RoboPongView {
+  constructor(robo_pong, ctx) {
+    this.ctx = ctx;
+    this.robo_pong = robo_pong;
+    this.paddles = this.robo_pong.paddle;
+  }
+
+  bindKeyHandlers() {
+    const paddles = this.paddles;
+    paddles.forEach(paddle => {
+      if (paddle.type === 'L') {
+        Object.keys(RoboPongView.LEFT).forEach(k => {
+          const move = RoboPongView.LEFT[k];
+          key(k, () => {
+            paddle.move(k);
+          });
+        });
+      } else {
+        Object.keys(RoboPongView.RIGHT).forEach(k => {
+          const move = RoboPongView.RIGHT[k];
+          key(k ,() => {
+            paddle.move(k);
+          });
+        });
+      }
+    });
+  }
+
+  start() {
+    this.bindKeyHandlers();
+    this.lastTime = 0;
+
+    requestAnimationFrame(this.animate.bind(this));
+  }
+
+  animate(time) {
+    const timeDelta = time - this.lastTime;
+
+    this.robo_pong.step(timeDelta);
+    this.robo_pong.draw(this.ctx);
+    this.lastTime = time;
+
+    requestAnimationFrame(this.animate.bind(this));
+  }
+}
+
+RoboPongView.LEFT = {
+  w: [0, 1],
+  s: [0, -1]
+};
+
+RoboPongView.RIGHT = {
+  u: [0, 1],
+  d: [0, -1]
+};
+
+module.exports = RoboPongView;
 
 
 /***/ })

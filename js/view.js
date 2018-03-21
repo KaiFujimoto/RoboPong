@@ -4,24 +4,34 @@ class RoboPongView {
   constructor(robo_pong, ctx) {
     this.ctx = ctx;
     this.robo_pong = robo_pong;
-    this.paddle = this.robo_pong.addPaddle();
+    this.paddles = this.robo_pong.paddle;
   }
 
   bindKeyHandlers() {
-    const paddle = this.paddle;
-
-    Object.keys(RoboPongView.MOVES).forEach((k) => {
-      const move = RoboPongView.MOVES[k];
-      key(k, () => { paddle.power(move); });
+    const paddles = this.paddles;
+    paddles.forEach(paddle => {
+      if (paddle.type === 'L') {
+        Object.keys(RoboPongView.LEFT).forEach(k => {
+          const move = RoboPongView.LEFT[k];
+          key(k, () => {
+            paddle.move(k);
+          });
+        });
+      } else {
+        Object.keys(RoboPongView.RIGHT).forEach(k => {
+          const move = RoboPongView.RIGHT[k];
+          key(k ,() => {
+            paddle.move(k);
+          });
+        });
+      }
     });
-
-    key("space", () => { paddle.fireBullet(); });
   }
 
   start() {
     this.bindKeyHandlers();
     this.lastTime = 0;
-    // start the animation
+
     requestAnimationFrame(this.animate.bind(this));
   }
 
@@ -32,16 +42,18 @@ class RoboPongView {
     this.robo_pong.draw(this.ctx);
     this.lastTime = time;
 
-    // every call to animate requests causes another call to animate
     requestAnimationFrame(this.animate.bind(this));
   }
 }
 
-RoboPongView.MOVES = {
-  w: [0, -1],
-  a: [-1, 0],
-  s: [0, 1],
-  d: [1, 0],
+RoboPongView.LEFT = {
+  w: [0, 1],
+  s: [0, -1]
+};
+
+RoboPongView.RIGHT = {
+  u: [0, 1],
+  d: [0, -1]
 };
 
 module.exports = RoboPongView;
