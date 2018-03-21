@@ -1,18 +1,19 @@
 const Coordinate = require('./coordinates');
+const MovingObject = require('./moving_object');
 
 class Paddle {
-  constructor(type, dim) {
+  constructor(type, board) {
     this.direction = "U";
     this.position = [];
     this.type = type;
-    this.dim = dim;
+    this.board = board;
   }
 
   positionSetter() {
     if (this.type === 'L') {
-      this.position = new Coordinate(0, Math.floor(this.dim/2));
+      this.position = new Coordinate(0, Math.floor(board.dim/2));
     } else {
-      this.position = new Coordinate(this.dim, Math.floor(this.dim/2));
+      this.position = new Coordinate(board.dim, Math.floor(board.dim/2));
     }
   }
 

@@ -1,11 +1,13 @@
 const Paddle = require('./paddle');
-const Coordinate = require('./coordinates');
+const Ball = require('./ball');
 
 class Board {
   constructor(dim) {
     this.dim = dim;
-    this.l_paddle = new Paddle('L', dim);
-    this.r_paddle = new Paddle('R', dim);
+
+    this.l_paddle = new Paddle('L', this);
+    this.r_paddle = new Paddle('R', this);
+    this.ball = new Ball(this);
   }
 
   static newBoard(dim) {
@@ -22,7 +24,7 @@ class Board {
     return grid;
   }
 
-  validPosition(position) {
+  validPaddlePosition(position) {
     return (position.y < this.dim) && (position.y >= 0);
   }
 
@@ -36,6 +38,8 @@ class Board {
     this.r_paddle.position.forEach( position => {
       grid[position.x][position.y] = Paddle.SYMBOL[1];
     });
+
+    grid[this.ball.position.x][this.ball.position.y] = Ball.SYMBOL;
 
     const rowStrs = [];
     grid.map( row => row.join("") ).join("\n");
