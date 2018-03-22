@@ -9,7 +9,7 @@ class Ball {
       vy: 2,
     };
     this.radius = 25;
-    this.color = '#ccc';
+    this.color = '#B22222';
   }
 
   draw(ctx) {
@@ -17,8 +17,9 @@ class Ball {
     ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI * 2, false);
     ctx.fillStyle = this.color;
     ctx.fill();
-    ctx.closePath()
+    ctx.closePath();
   }
+
 }
 
 module.exports = Ball;

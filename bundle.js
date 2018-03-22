@@ -65,15 +65,19 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// const Paddle = require("./paddles");
+"use strict";
+const Right = __webpack_require__(10);
+const Left = __webpack_require__(11);
 const Ball = __webpack_require__(5);
 // const Util = require("./util");
 
 class RoboPong {
   constructor() {
     // this.paddle = [];
+    this.left = new Left();
+    this.right = new Right();
     this.ball = new Ball();
 
     // this.deploy();
@@ -102,21 +106,54 @@ class RoboPong {
   // }
   //
   // checkCollisions() {
+  //   const allObjects = this.allObjects();
+  //   for (let i = 0; i < allObjects.length; i++) {
+  //     for (let j = 0; j < allObjects.length; j++) {
+  //       const obj1 = allObjects[i];
+  //       const obj2 = allObjects[j];
   //
-  //   // const allObjects = this.allObjects();
-  //   // for (let i = 0; i < allObjects.length; i++) {
-  //   //   for (let j = 0; j < allObjects.length; j++) {
-  //   //     const obj1 = allObjects[i];
-  //   //     const obj2 = allObjects[j];
-  //   //
-  //   //     if (obj1.isCollidedWith(obj2)) {
-  //   //       const collision = obj1.collideWith(obj2);
-  //   //       if (collision) return;
-  //   //     }
-  //   //   }
-  //   // }
-  //
+  //       if (obj1.isCollidedWith(obj2)) {
+  //         const collision = obj1.collideWith(obj2);
+  //         if (collision) return;
+  //       }
+  //     }
+  //   }
   // }
+
+  checkOutOfBounds() {
+    if (this.ball.pos.y + this.ball.vel.vy > 490 ||
+        this.ball.pos.y + this.ball.vel.vy < 10) {
+      this.ball.vel.vy = -this.ball.vel.vy;
+    }
+    if (this.ball.pos.x + this.ball.vel.vx > 790 ||
+        this.ball.pos.x + this.ball.vel.vx < 10) {
+      this.ball.vel.vx = -this.ball.vel.vx;
+    }
+  }
+
+  checkHitPaddle() {
+    const ballX = this.ball.pos.x + this.ball.vel.vx;
+    const ballY = this.ball.pos.y + this.ball.vel.vy;
+    const leftX = this.left.pos[0] + 5;
+    const leftY = this.left.pos[1] + 5;
+    const rightX = this.right.pos[0] + 5;
+    const rightY = this.right.pos[1] + 5;
+
+    if((ballX > leftX) &&
+    (ballX < (leftX + this.left.dim[0])) &&
+    (ballY > leftY) &&
+    (ballY < (leftY + this.left.dim[1]))) {
+
+      this.ball.vel.vx = -this.ball.vel.vx;
+    }
+
+    if((ballX > rightX) &&
+    (ballX < (rightX + this.right.dim[0])) &&
+    (ballY > rightY) &&
+    (ballY < (rightY + this.right.dim[1]))) {
+       this.ball.vel.vx = -this.ball.vel.vx;
+    }
+  }
 
   draw(ctx) {
     ctx.clearRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
@@ -126,15 +163,12 @@ class RoboPong {
     this.ball.draw(ctx);
     this.ball.pos.x += this.ball.vel.vx;
     this.ball.pos.y += this.ball.vel.vy;
+    
+    this.checkOutOfBounds();
+    this.checkHitPaddle();
 
-    if (this.ball.pos.y + this.ball.vel.vy > 490 ||
-        this.ball.pos.y + this.ball.vel.vy < 10) {
-      this.ball.vel.vy = -this.ball.vel.vy;
-    }
-    if (this.ball.pos.x + this.ball.vel.vx > 790 ||
-        this.ball.pos.x + this.ball.vel.vx < 10) {
-      this.ball.vel.vx = -(this.ball.vel.vx);
-    }
+    this.left.draw(ctx);
+    this.right.draw(ctx);
   }
 
   // isOutOfBoundsX(pos) {
@@ -226,7 +260,7 @@ class Ball {
       vy: 2,
     };
     this.radius = 25;
-    this.color = '#ccc';
+    this.color = '#B22222';
   }
 
   draw(ctx) {
@@ -234,8 +268,9 @@ class Ball {
     ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI * 2, false);
     ctx.fillStyle = this.color;
     ctx.fill();
-    ctx.closePath()
+    ctx.closePath();
   }
+
 }
 
 module.exports = Ball;
@@ -306,6 +341,63 @@ class RoboPongView {
 // };
 
 module.exports = RoboPongView;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+class Paddle {
+  constructor(options) {
+    this.pos = options.pos;
+    this.dim = [25, 85];
+    this.color = options.color;
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.pos[0], this.pos[1], this.dim[0], this.dim[1]);
+    ctx.closePath();
+  }
+}
+
+module.exports = Paddle;
+
+
+/***/ }),
+/* 9 */,
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Paddle = __webpack_require__(8);
+
+class Right extends Paddle {
+  constructor(options = {}) {
+    options.pos = options.pos || [750, 250];
+    options.color = options.color || '#FFC0CB';
+    super(options);
+  }
+}
+
+module.exports = Right;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Paddle = __webpack_require__(8);
+
+class Left extends Paddle {
+  constructor(options = {}) {
+    options.pos = options.pos || [25, 250];
+    options.color = options.color || '#00FFFF';
+    super(options);
+  }
+}
+
+module.exports = Left;
 
 
 /***/ })
