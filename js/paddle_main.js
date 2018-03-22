@@ -11,6 +11,8 @@ class Paddle {
     ctx.fillRect(this.pos[0], this.pos[1], this.dim[0], this.dim[1]);
     ctx.closePath();
   }
+
+  
 }
 
 module.exports = Paddle;

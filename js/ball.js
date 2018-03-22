@@ -1,8 +1,8 @@
 class Ball {
   constructor() {
     this.pos = {
-      x: 100,
-      y: 100,
+      x: 400,
+      y: 250,
     };
     this.vel = {
       vx: 5,

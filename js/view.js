@@ -4,9 +4,37 @@ class RoboPongView {
   constructor(robo_pong, ctx) {
     this.ctx = ctx;
     this.robo_pong = robo_pong;
-    this.paddles = this.robo_pong.paddle;
+    this.left = this.robo_pong.left;
+    this.right = this.robo_pong.right;
   }
 
+  keyDownHandler(e) {
+    if(e.keyCode == 40) {
+      this.robo_pong.upPressed = true;
+    } else if(e.keyCode == 38) {
+      this.robo_pong.downPressed = true;
+    }
+
+    if(e.keyCode == 83) {
+      this.robo_pong.imPressed = true;
+    } else if(e.keyCode == 87) {
+      this.robo_pong.dePressed = true;
+    }
+  }
+
+  keyUpHandler(e) {
+    if(e.keyCode == 40) {
+      this.robo_pong.upPressed = false;
+    } else if(e.keyCode == 38) {
+      this.robo_pong.downPressed = false;
+    }
+
+    if(e.keyCode == 83) {
+      this.robo_pong.imPressed = false;
+    } else if(e.keyCode == 87) {
+      this.robo_pong.dePressed = false;
+    }
+  }
 
   //
   // bindKeyHandlers() {
@@ -31,15 +59,14 @@ class RoboPongView {
   // }
 
   start() {
-    // this.bindKeyHandlers();
-    // this.lastTime = 0;
+    document.addEventListener("keydown", this.keyDownHandler.bind(this), false);
+    document.addEventListener("keyup", this.keyUpHandler.bind(this), false);
 
     requestAnimationFrame(this.animate.bind(this));
   }
 
   animate() {
     // let timeDelta = time - this.lastTime;
-
     this.robo_pong.draw(this.ctx);
     // this.lastTime = time;
 

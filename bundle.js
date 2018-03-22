@@ -79,8 +79,15 @@ class RoboPong {
     this.left = new Left();
     this.right = new Right();
     this.ball = new Ball();
+    this.upPressed = false;
+    this.downPressed = false;
+    this.imPressed = false;
+    this.dePressed = false;
 
     // this.deploy();
+  }
+  replace() {
+    this.ball = new Ball();
   }
   //
   // add(object) {
@@ -121,51 +128,70 @@ class RoboPong {
   // }
 
   checkOutOfBounds() {
-    if (this.ball.pos.y + this.ball.vel.vy > 490 ||
-        this.ball.pos.y + this.ball.vel.vy < 10) {
+    if (this.ball.pos.y + this.ball.vel.vy > 475 ||
+        this.ball.pos.y + this.ball.vel.vy < 25) {
       this.ball.vel.vy = -this.ball.vel.vy;
     }
-    if (this.ball.pos.x + this.ball.vel.vx > 790 ||
-        this.ball.pos.x + this.ball.vel.vx < 10) {
-      this.ball.vel.vx = -this.ball.vel.vx;
+    if (this.ball.pos.x + this.ball.vel.vx > 800 ||
+        this.ball.pos.x + this.ball.vel.vx < 0) {
+      setTimeout(() => this.replace(), 1000);
     }
   }
 
   checkHitPaddle() {
     const ballX = this.ball.pos.x + this.ball.vel.vx;
     const ballY = this.ball.pos.y + this.ball.vel.vy;
-    const leftX = this.left.pos[0] + 5;
-    const leftY = this.left.pos[1] + 5;
-    const rightX = this.right.pos[0] + 5;
-    const rightY = this.right.pos[1] + 5;
+    const leftX = this.left.pos[0];
+    const leftY = this.left.pos[1];
+    const rightX = this.right.pos[0];
+    const rightY = this.right.pos[1];
 
-    if((ballX > leftX) &&
-    (ballX < (leftX + this.left.dim[0])) &&
-    (ballY > leftY) &&
-    (ballY < (leftY + this.left.dim[1]))) {
-
+    if (((ballX - 20) > leftX) && // if the ball is on the right of the left border of the left bar
+    ((ballX - 20) < (leftX + this.left.dim[0])) && // if the ball is on the left of the right border of the left bar
+    (ballY + 15 > leftY - 15) && // if the ballY is larger than the top border
+    (ballY - 20 < (leftY + this.left.dim[1] + 20))) { // if ballY is less than the bottom border
       this.ball.vel.vx = -this.ball.vel.vx;
     }
 
-    if((ballX > rightX) &&
-    (ballX < (rightX + this.right.dim[0])) &&
-    (ballY > rightY) &&
-    (ballY < (rightY + this.right.dim[1]))) {
+    if ((ballX + 20 > rightX) &&
+    (ballX + 20 < (rightX + this.right.dim[0])) &&
+    (ballY + 20 > rightY - 20) &&
+    (ballY - 20 < (rightY + this.right.dim[1] + 20))) {
        this.ball.vel.vx = -this.ball.vel.vx;
     }
   }
 
+  checkKeyPress() {
+    if(this.upPressed && this.right.pos[1] < 500 - this.right.dim[1]) {
+      this.right.pos[1] += 7;
+    }
+    else if(this.downPressed && this.right.pos[1] > 0) {
+      this.right.pos[1] -= 7;
+    }
+
+    if(this.imPressed && this.left.pos[1] < 500 - this.left.dim[1]) {
+      this.left.pos[1] += 7;
+    }
+    else if(this.dePressed && this.left.pos[1] > 0) {
+      this.left.pos[1] -= 7;
+    }
+  }
+
   draw(ctx) {
+
     ctx.clearRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
     ctx.fillStyle = RoboPong.BG_COLOR;
     ctx.fillRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
-
+    debugger
     this.ball.draw(ctx);
+    debugger
     this.ball.pos.x += this.ball.vel.vx;
     this.ball.pos.y += this.ball.vel.vy;
-    
+
     this.checkOutOfBounds();
+    debugger
     this.checkHitPaddle();
+    this.checkKeyPress();
 
     this.left.draw(ctx);
     this.right.draw(ctx);
@@ -252,8 +278,8 @@ document.addEventListener("DOMContentLoaded", () => {
 class Ball {
   constructor() {
     this.pos = {
-      x: 100,
-      y: 100,
+      x: 400,
+      y: 250,
     };
     this.vel = {
       vx: 5,
@@ -287,9 +313,37 @@ class RoboPongView {
   constructor(robo_pong, ctx) {
     this.ctx = ctx;
     this.robo_pong = robo_pong;
-    this.paddles = this.robo_pong.paddle;
+    this.left = this.robo_pong.left;
+    this.right = this.robo_pong.right;
   }
 
+  keyDownHandler(e) {
+    if(e.keyCode == 40) {
+      this.robo_pong.upPressed = true;
+    } else if(e.keyCode == 38) {
+      this.robo_pong.downPressed = true;
+    }
+
+    if(e.keyCode == 83) {
+      this.robo_pong.imPressed = true;
+    } else if(e.keyCode == 87) {
+      this.robo_pong.dePressed = true;
+    }
+  }
+
+  keyUpHandler(e) {
+    if(e.keyCode == 40) {
+      this.robo_pong.upPressed = false;
+    } else if(e.keyCode == 38) {
+      this.robo_pong.downPressed = false;
+    }
+
+    if(e.keyCode == 83) {
+      this.robo_pong.imPressed = false;
+    } else if(e.keyCode == 87) {
+      this.robo_pong.dePressed = false;
+    }
+  }
 
   //
   // bindKeyHandlers() {
@@ -314,15 +368,14 @@ class RoboPongView {
   // }
 
   start() {
-    // this.bindKeyHandlers();
-    // this.lastTime = 0;
+    document.addEventListener("keydown", this.keyDownHandler.bind(this), false);
+    document.addEventListener("keyup", this.keyUpHandler.bind(this), false);
 
     requestAnimationFrame(this.animate.bind(this));
   }
 
   animate() {
     // let timeDelta = time - this.lastTime;
-
     this.robo_pong.draw(this.ctx);
     // this.lastTime = time;
 
@@ -360,6 +413,8 @@ class Paddle {
     ctx.fillRect(this.pos[0], this.pos[1], this.dim[0], this.dim[1]);
     ctx.closePath();
   }
+
+  
 }
 
 module.exports = Paddle;
