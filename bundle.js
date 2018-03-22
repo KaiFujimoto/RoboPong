@@ -67,223 +67,131 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Paddle = __webpack_require__(2);
+// const Paddle = require("./paddles");
 const Ball = __webpack_require__(5);
-const Util = __webpack_require__(1);
+// const Util = require("./util");
 
 class RoboPong {
   constructor() {
-    this.paddle = [];
-    this.ball = [];
+    // this.paddle = [];
+    this.ball = new Ball();
 
-    this.deploy();
+    // this.deploy();
   }
-
-  add(object) {
-    this.ball.push(object);
-  }
-
-  addPaddles() {
-    const paddleL = new Paddle({
-      type: 'L',
-      game: this
-    });
-    this.paddle.push(paddleL);
-
-    const paddleR = new Paddle({
-      type: 'R',
-      game: this
-    });
-    this.paddle.push(paddleR);
-  }
-
-  deploy() {
-    this.add(new Ball({ robo_pong: this }));
-  }
-
-  checkCollisions() {
-
-    // const allObjects = this.allObjects();
-    // for (let i = 0; i < allObjects.length; i++) {
-    //   for (let j = 0; j < allObjects.length; j++) {
-    //     const obj1 = allObjects[i];
-    //     const obj2 = allObjects[j];
-    //
-    //     if (obj1.isCollidedWith(obj2)) {
-    //       const collision = obj1.collideWith(obj2);
-    //       if (collision) return;
-    //     }
-    //   }
-    // }
-
-  }
+  //
+  // add(object) {
+  //   this.ball.push(object);
+  // }
+  //
+  // addPaddles() {
+  //   const paddleL = new Paddle({
+  //     type: 'L',
+  //     game: this
+  //   });
+  //   this.paddle.push(paddleL);
+  //
+  //   const paddleR = new Paddle({
+  //     type: 'R',
+  //     game: this
+  //   });
+  //   this.paddle.push(paddleR);
+  // }
+  //
+  // deploy() {
+  //   this.add(new Ball({ robo_pong: this }));
+  // }
+  //
+  // checkCollisions() {
+  //
+  //   // const allObjects = this.allObjects();
+  //   // for (let i = 0; i < allObjects.length; i++) {
+  //   //   for (let j = 0; j < allObjects.length; j++) {
+  //   //     const obj1 = allObjects[i];
+  //   //     const obj2 = allObjects[j];
+  //   //
+  //   //     if (obj1.isCollidedWith(obj2)) {
+  //   //       const collision = obj1.collideWith(obj2);
+  //   //       if (collision) return;
+  //   //     }
+  //   //   }
+  //   // }
+  //
+  // }
 
   draw(ctx) {
     ctx.clearRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
     ctx.fillStyle = RoboPong.BG_COLOR;
     ctx.fillRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
 
-    this.ball[0].draw(ctx);
-  }
+    this.ball.draw(ctx);
+    this.ball.pos.x += this.ball.vel.vx;
+    this.ball.pos.y += this.ball.vel.vy;
 
-  isOutOfBoundsX(pos) {
-    return (pos[0] < 0) ||
-      (pos[0] > RoboPong.DIM_X);
-  }
-
-  isOutOfBoundsY() {
-    return (this.ball[0].pos[1] < 5) ||
-      (this.ball[0].pos[1] > RoboPong.DIM_Y - 5);
-  }
-
-  moveObjects(delta) {
-    this.ball[0].move(delta);
-  }
-
-  randomPosition() {
-    return [
-      RoboPong.DIM_X * Math.random(),
-      RoboPong.DIM_Y * Math.random()
-    ];
-  }
-
-  remove(object) {
-    if (object instanceof Paddle) {
-      this.ball.splice(this.ball.indexOf(object), 1);
-    } else if (object instanceof Ball) {
-      this.paddle.splice(this.paddle.indexOf(object), 1);
-    } else {
-      throw new Error("unknown type of object");
+    if (this.ball.pos.y + this.ball.vel.vy > 490 ||
+        this.ball.pos.y + this.ball.vel.vy < 10) {
+      this.ball.vel.vy = -this.ball.vel.vy;
+    }
+    if (this.ball.pos.x + this.ball.vel.vx > 790 ||
+        this.ball.pos.x + this.ball.vel.vx < 10) {
+      this.ball.vel.vx = -(this.ball.vel.vx);
     }
   }
 
-  step(delta) {
-    this.moveObjects(delta);
-    this.checkCollisions();
-  }
+  // isOutOfBoundsX(pos) {
+  //   return (pos[0] < 0) ||
+  //     (pos[0] > RoboPong.DIM_X);
+  // }
+  //
+  // isOutOfBoundsY() {
+  //   return (this.ball[0].pos[1] < 5) ||
+  //     (this.ball[0].pos[1] > RoboPong.DIM_Y - 5);
+  // }
 
-  wrap(pos) {
-    return [
-      Util.wrap(pos[0], RoboPong.DIM_X), Util.wrap(pos[1], RoboPong.DIM_Y)
-    ];
-  }
+  // moveObjects(delta) {
+  //   this.ball[0].move(delta);
+  // }
+  //
+  // randomPosition() {
+  //   return [
+  //     RoboPong.DIM_X * Math.random(),
+  //     RoboPong.DIM_Y * Math.random()
+  //   ];
+  // }
+  //
+  // remove(object) {
+  //   if (object instanceof Paddle) {
+  //     this.ball.splice(this.ball.indexOf(object), 1);
+  //   } else if (object instanceof Ball) {
+  //     this.paddle.splice(this.paddle.indexOf(object), 1);
+  //   } else {
+  //     throw new Error("unknown type of object");
+  //   }
+  // }
+  //
+  // step(delta) {
+  //   this.moveObjects(delta);
+  //   this.checkCollisions();
+  // }
+  //
+  // wrap(pos) {
+  //   return [
+  //     Util.wrap(pos[0], RoboPong.DIM_X), Util.wrap(pos[1], RoboPong.DIM_Y)
+  //   ];
+  // }
 
 }
 
 RoboPong.BG_COLOR = "#000000";
-RoboPong.DIM_X = 1000;
-RoboPong.DIM_Y = 600;
+RoboPong.DIM_X = 800;
+RoboPong.DIM_Y = 500;
 RoboPong.FPS = 32;
 
 module.exports = RoboPong;
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-const Util = {
-  // Normalize the length of the vector to 1, maintaining direction.
-  dir(vec) {
-    const norm = Util.norm(vec);
-    return Util.scale(vec, 1 / norm);
-  },
-  // Find distance between two points.
-  dist(pos1, pos2) {
-    return Math.sqrt(
-      Math.pow(pos1[0] - pos2[0], 2) + Math.pow(pos1[1] - pos2[1], 2)
-    );
-  },
-  // Find the length of the vector.
-  norm(vec) {
-    return Util.dist([0, 0], vec);
-  },
-  // // Return a randomly oriented vector with the given length.
-  randomVec(length) {
-    const deg = 1 * Math.PI;
-    return Util.scale([Math.sin(deg), Math.cos(deg)], length);
-  },
-  // Scale the length of a vector by the given amount.
-  scale(vec, m) {
-    return [vec[0] * m, vec[1] * m];
-  },
-
-  inherits(ChildClass, BaseClass) {
-    ChildClass.prototype = Object.create(BaseClass.prototype);
-    ChildClass.prototype.constructor = ChildClass;
-  },
-
-  wrap(coord, max) {
-    if (coord < 0) {
-      return max - (coord % max);
-    } else if (coord > max) {
-      return coord % max;
-    } else {
-      return coord;
-    }
-  },
-
-};
-
-module.exports = Util;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Coordinate = __webpack_require__(4);
-const RoboPong = __webpack_require__(0);
-const MovingObject = __webpack_require__(6);
-
-class Paddle extends MovingObject {
-  constructor(options = {}) {
-    options.color = "#00FFFF";
-  }
-
-  draw(ctx) {
-    ctx.fillStyle = this.color;
-
-    ctx.beginPath();
-    ctx.arc(
-      this.pos[0], this.pos[1], this.radius, 0, 2 * Math.PI, true
-    );
-    ctx.fill();
-  }
-
-  positionSetter() {
-    if (this.type === 'L') {
-      this.position = new Coordinate(0, Math.floor(robo_pong.DIM_Y/2));
-    } else {
-      this.position = new Coordinate(robo_pong.DIM_X, Math.floor(robo_pong.DIM_Y/2));
-    }
-  }
-
-  currentPosition() {
-    this.position.slice(-1);
-  }
-
-  move(direction) {
-    this.position.push(this.position.plus(Paddle.DIRECTIONS[direction]));
-  }
-}
-
-Paddle.DIRECTIONS = {
-  "U": new Coordinate(0, 1),
-  "D": new Coordinate(0, -1)
-};
-
-Paddle.TYPES = {
-  "L": 0,
-  "R": 1
-};
-
-Paddle.SYMBOL = ['l', 'r'];
-
-module.exports = Paddle;
-
-
-/***/ }),
+/* 1 */,
+/* 2 */,
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -303,77 +211,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /***/ }),
-/* 4 */
+/* 4 */,
+/* 5 */
 /***/ (function(module, exports) {
 
-class Coordinate {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  equals(position) {
-     return (this.x == position.x) && (this.y == position.y);
- }
-
- isOpposite(position) {
-   return (this.x == (-1 * position.x)) && (this.y == (-1 * position.y));
- }
-
- plus(position) {
-   return new Coord(this.x + position.x, this.y + position.y);
- }
-}
-
-module.exports = Coordinate;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Util = __webpack_require__(1);
-const MovingObject = __webpack_require__(6);
-const Paddle = __webpack_require__(2);
-
-const DEFAULTS = {
-  COLOR: "#505050",
-  RADIUS: 25,
-  SPEED: 4
-};
-
-class Ball extends MovingObject {
-  constructor(options = {}) {
-    options.color = DEFAULTS.COLOR;
-    options.pos = options.pos || options.robo_pong.randomPosition();
-    options.radius = DEFAULTS.RADIUS;
-    options.vel = options.vel || Util.randomVec(DEFAULTS.SPEED);
-    super(options);
+class Ball {
+  constructor() {
+    this.pos = {
+      x: 100,
+      y: 100,
+    };
+    this.vel = {
+      vx: 5,
+      vy: 2,
+    };
+    this.radius = 25;
+    this.color = '#ccc';
   }
 
   draw(ctx) {
-    ctx.fillStyle = this.color;
-
     ctx.beginPath();
-    ctx.arc(
-      this.pos[0], this.pos[1], this.radius, 0, 2 * Math.PI, true
-    );
+    ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI * 2, false);
+    ctx.fillStyle = this.color;
     ctx.fill();
-  }
-
-  collideWith(otherObject) {
-
-    if (otherObject instanceof Paddle) {
-      otherObject.relocate();
-      return true;
-    } else if (this.pos[0] === 1000) {
-      otherObject.relocate();
-      return true;
-    } else if (this.pos[1] === 0) {
-      otherObject.relocate();
-      return true;
-    }
-    return false;
+    ctx.closePath()
   }
 }
 
@@ -381,68 +242,7 @@ module.exports = Ball;
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Util = __webpack_require__(1);
-
-class MovingObject {
-  constructor(options) {
-    this.pos = options.pos;
-    this.vel = options.vel;
-    this.radius = options.radius;
-    this.color = options.color;
-    this.robo_pong = options.robo_pong;
-    this.isWrappable = true;
-  }
-
-  collideWith(otherObject) {
-    // default do nothing
-  }
-
-  isCollidedWith(otherObject) {
-    const centerDist = Util.dist(this.pos, otherObject);
-    return centerDist < (this.radius + otherObject[1]);
-  }
-
-  move(timeDelta) {
-    // timeDelta is number of milliseconds since last move
-    // if the computer is busy the time delta will be larger
-    // in this case the MovingObject should move farther in this frame
-    // velocity of object is how far it should move in 1/60th of a
-    debugger
-    let time;
-    if (this.pos[1] <= 5) {
-      time = timeDelta * -1;
-      debugger
-    } else {
-      time = timeDelta;
-    }
-    const velocityScale = time / NORMAL_FRAME_TIME_DELTA,
-        offsetX = this.vel[0] * Math.abs(velocityScale),
-        offsetY = this.vel[1] * velocityScale;
-      this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
-        if (this.robo_pong.isOutOfBoundsX(this.pos)) {
-          if (this.isWrappable) {
-              this.pos = this.robo_pong.wrap(this.pos);
-            } else {
-              this.remove();
-          }
-        }
-
-    }
-
-  remove() {
-    this.robo_pong.remove(this);
-  }
-}
-
-const NORMAL_FRAME_TIME_DELTA = 1000 / 60;
-
-module.exports = MovingObject;
-
-
-/***/ }),
+/* 6 */,
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -455,54 +255,55 @@ class RoboPongView {
     this.paddles = this.robo_pong.paddle;
   }
 
-  bindKeyHandlers() {
-    const paddles = this.paddles;
-    paddles.forEach(paddle => {
-      if (paddle.type === 'L') {
-        Object.keys(RoboPongView.LEFT).forEach(k => {
-          const move = RoboPongView.LEFT[k];
-          key(k, () => {
-            paddle.move(k);
-          });
-        });
-      } else {
-        Object.keys(RoboPongView.RIGHT).forEach(k => {
-          const move = RoboPongView.RIGHT[k];
-          key(k ,() => {
-            paddle.move(k);
-          });
-        });
-      }
-    });
-  }
+
+  //
+  // bindKeyHandlers() {
+  //   const paddles = this.paddles;
+  //   paddles.forEach(paddle => {
+  //     if (paddle.type === 'L') {
+  //       Object.keys(RoboPongView.LEFT).forEach(k => {
+  //         const move = RoboPongView.LEFT[k];
+  //         key(k, () => {
+  //           paddle.move(k);
+  //         });
+  //       });
+  //     } else {
+  //       Object.keys(RoboPongView.RIGHT).forEach(k => {
+  //         const move = RoboPongView.RIGHT[k];
+  //         key(k ,() => {
+  //           paddle.move(k);
+  //         });
+  //       });
+  //     }
+  //   });
+  // }
 
   start() {
-    this.bindKeyHandlers();
-    this.lastTime = 0;
+    // this.bindKeyHandlers();
+    // this.lastTime = 0;
 
     requestAnimationFrame(this.animate.bind(this));
   }
 
-  animate(time) {
-    let timeDelta = time - this.lastTime;
+  animate() {
+    // let timeDelta = time - this.lastTime;
 
-    this.robo_pong.step(timeDelta);
     this.robo_pong.draw(this.ctx);
-    this.lastTime = time;
+    // this.lastTime = time;
 
     requestAnimationFrame(this.animate.bind(this));
   }
 }
-
-RoboPongView.LEFT = {
-  w: [0, 1],
-  s: [0, -1]
-};
-
-RoboPongView.RIGHT = {
-  u: [0, 1],
-  d: [0, -1]
-};
+//
+// RoboPongView.LEFT = {
+//   w: [0, 1],
+//   s: [0, -1]
+// };
+//
+// RoboPongView.RIGHT = {
+//   u: [0, 1],
+//   d: [0, -1]
+// };
 
 module.exports = RoboPongView;
 
