@@ -16,3 +16,5 @@ class Coordinate {
    return new Coord(this.x + position.x, this.y + position.y);
  }
 }
+
+module.exports = Coordinate;

@@ -36,7 +36,7 @@ class RoboPongView {
   }
 
   animate(time) {
-    const timeDelta = time - this.lastTime;
+    let timeDelta = time - this.lastTime;
 
     this.robo_pong.step(timeDelta);
     this.robo_pong.draw(this.ctx);

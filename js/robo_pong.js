@@ -32,23 +32,21 @@ class RoboPong {
     this.add(new Ball({ robo_pong: this }));
   }
 
-  allObjects() {
-    return [].concat(this.paddle, this.ball);
-  }
-
   checkCollisions() {
-    const allObjects = this.allObjects();
-    for (let i = 0; i < allObjects.length; i++) {
-      for (let j = 0; j < allObjects.length; j++) {
-        const obj1 = allObjects[i];
-        const obj2 = allObjects[j];
 
-        if (obj1.isCollidedWith(obj2)) {
-          const collision = obj1.collideWith(obj2);
-          if (collision) return;
-        }
-      }
-    }
+    // const allObjects = this.allObjects();
+    // for (let i = 0; i < allObjects.length; i++) {
+    //   for (let j = 0; j < allObjects.length; j++) {
+    //     const obj1 = allObjects[i];
+    //     const obj2 = allObjects[j];
+    //
+    //     if (obj1.isCollidedWith(obj2)) {
+    //       const collision = obj1.collideWith(obj2);
+    //       if (collision) return;
+    //     }
+    //   }
+    // }
+
   }
 
   draw(ctx) {
@@ -56,14 +54,17 @@ class RoboPong {
     ctx.fillStyle = RoboPong.BG_COLOR;
     ctx.fillRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
 
-    this.allObjects().forEach((object) => {
-      object.draw(ctx);
-    });
+    this.ball[0].draw(ctx);
   }
 
-  isOutOfBounds(pos) {
+  isOutOfBoundsX(pos) {
     return (pos[0] < 0) ||
       (pos[0] > RoboPong.DIM_X);
+  }
+
+  isOutOfBoundsY() {
+    return (this.ball[0].pos[1] < 5) ||
+      (this.ball[0].pos[1] > RoboPong.DIM_Y - 5);
   }
 
   moveObjects(delta) {
@@ -97,6 +98,7 @@ class RoboPong {
       Util.wrap(pos[0], RoboPong.DIM_X), Util.wrap(pos[1], RoboPong.DIM_Y)
     ];
   }
+
 }
 
 RoboPong.BG_COLOR = "#000000";

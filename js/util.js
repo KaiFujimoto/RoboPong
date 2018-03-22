@@ -37,7 +37,8 @@ const Util = {
     } else {
       return coord;
     }
-  }
+  },
+
 };
 
 module.exports = Util;

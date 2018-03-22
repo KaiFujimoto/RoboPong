@@ -101,23 +101,21 @@ class RoboPong {
     this.add(new Ball({ robo_pong: this }));
   }
 
-  allObjects() {
-    return [].concat(this.paddle, this.ball);
-  }
-
   checkCollisions() {
-    const allObjects = this.allObjects();
-    for (let i = 0; i < allObjects.length; i++) {
-      for (let j = 0; j < allObjects.length; j++) {
-        const obj1 = allObjects[i];
-        const obj2 = allObjects[j];
 
-        if (obj1.isCollidedWith(obj2)) {
-          const collision = obj1.collideWith(obj2);
-          if (collision) return;
-        }
-      }
-    }
+    // const allObjects = this.allObjects();
+    // for (let i = 0; i < allObjects.length; i++) {
+    //   for (let j = 0; j < allObjects.length; j++) {
+    //     const obj1 = allObjects[i];
+    //     const obj2 = allObjects[j];
+    //
+    //     if (obj1.isCollidedWith(obj2)) {
+    //       const collision = obj1.collideWith(obj2);
+    //       if (collision) return;
+    //     }
+    //   }
+    // }
+
   }
 
   draw(ctx) {
@@ -125,14 +123,17 @@ class RoboPong {
     ctx.fillStyle = RoboPong.BG_COLOR;
     ctx.fillRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
 
-    this.allObjects().forEach((object) => {
-      object.draw(ctx);
-    });
+    this.ball[0].draw(ctx);
   }
 
-  isOutOfBounds(pos) {
+  isOutOfBoundsX(pos) {
     return (pos[0] < 0) ||
       (pos[0] > RoboPong.DIM_X);
+  }
+
+  isOutOfBoundsY() {
+    return (this.ball[0].pos[1] < 5) ||
+      (this.ball[0].pos[1] > RoboPong.DIM_Y - 5);
   }
 
   moveObjects(delta) {
@@ -166,6 +167,7 @@ class RoboPong {
       Util.wrap(pos[0], RoboPong.DIM_X), Util.wrap(pos[1], RoboPong.DIM_Y)
     ];
   }
+
 }
 
 RoboPong.BG_COLOR = "#000000";
@@ -219,7 +221,8 @@ const Util = {
     } else {
       return coord;
     }
-  }
+  },
+
 };
 
 module.exports = Util;
@@ -231,13 +234,21 @@ module.exports = Util;
 
 const Coordinate = __webpack_require__(4);
 const RoboPong = __webpack_require__(0);
+const MovingObject = __webpack_require__(6);
 
-class Paddle {
-  constructor(type, robo_pong) {
-    this.direction = "U";
-    this.position = [];
-    this.type = type;
-    this.robo_pong = robo_pong;
+class Paddle extends MovingObject {
+  constructor(options = {}) {
+    options.color = "#00FFFF";
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = this.color;
+
+    ctx.beginPath();
+    ctx.arc(
+      this.pos[0], this.pos[1], this.radius, 0, 2 * Math.PI, true
+    );
+    ctx.fill();
   }
 
   positionSetter() {
@@ -314,6 +325,8 @@ class Coordinate {
  }
 }
 
+module.exports = Coordinate;
+
 
 /***/ }),
 /* 5 */
@@ -338,8 +351,18 @@ class Ball extends MovingObject {
     super(options);
   }
 
+  draw(ctx) {
+    ctx.fillStyle = this.color;
+
+    ctx.beginPath();
+    ctx.arc(
+      this.pos[0], this.pos[1], this.radius, 0, 2 * Math.PI, true
+    );
+    ctx.fill();
+  }
+
   collideWith(otherObject) {
-    debugger
+
     if (otherObject instanceof Paddle) {
       otherObject.relocate();
       return true;
@@ -377,41 +400,37 @@ class MovingObject {
     // default do nothing
   }
 
-  draw(ctx) {
-    ctx.fillStyle = this.color;
-
-    ctx.beginPath();
-    ctx.arc(
-      this.pos[0], this.pos[1], this.radius, 0, 2 * Math.PI, true
-    );
-    ctx.fill();
-  }
-
   isCollidedWith(otherObject) {
-    const centerDist = Util.dist(this.pos, otherObject.pos);
-    return centerDist < (this.radius + otherObject.radius);
+    const centerDist = Util.dist(this.pos, otherObject);
+    return centerDist < (this.radius + otherObject[1]);
   }
 
   move(timeDelta) {
     // timeDelta is number of milliseconds since last move
     // if the computer is busy the time delta will be larger
     // in this case the MovingObject should move farther in this frame
-    // velocity of object is how far it should move in 1/60th of a second
+    // velocity of object is how far it should move in 1/60th of a
     debugger
-    const velocityScale = timeDelta / NORMAL_FRAME_TIME_DELTA,
-        offsetX = this.vel[0] * velocityScale,
-        offsetY = this.vel[1] * velocityScale;
-
-    this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
-
-    if (this.robo_pong.isOutOfBounds(this.pos)) {
-      if (this.isWrappable) {
-        this.pos = this.robo_pong.wrap(this.pos);
-      } else {
-        this.remove();
-      }
+    let time;
+    if (this.pos[1] <= 5) {
+      time = timeDelta * -1;
+      debugger
+    } else {
+      time = timeDelta;
     }
-  }
+    const velocityScale = time / NORMAL_FRAME_TIME_DELTA,
+        offsetX = this.vel[0] * Math.abs(velocityScale),
+        offsetY = this.vel[1] * velocityScale;
+      this.pos = [this.pos[0] + offsetX, this.pos[1] + offsetY];
+        if (this.robo_pong.isOutOfBoundsX(this.pos)) {
+          if (this.isWrappable) {
+              this.pos = this.robo_pong.wrap(this.pos);
+            } else {
+              this.remove();
+          }
+        }
+
+    }
 
   remove() {
     this.robo_pong.remove(this);
@@ -465,7 +484,7 @@ class RoboPongView {
   }
 
   animate(time) {
-    const timeDelta = time - this.lastTime;
+    let timeDelta = time - this.lastTime;
 
     this.robo_pong.step(timeDelta);
     this.robo_pong.draw(this.ctx);

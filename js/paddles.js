@@ -1,12 +1,20 @@
 const Coordinate = require('./coordinates');
 const RoboPong = require('./robo_pong');
+const MovingObject = require('./moving_object');
 
-class Paddle {
-  constructor(type, robo_pong) {
-    this.direction = "U";
-    this.position = [];
-    this.type = type;
-    this.robo_pong = robo_pong;
+class Paddle extends MovingObject {
+  constructor(options = {}) {
+    options.color = "#00FFFF";
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = this.color;
+
+    ctx.beginPath();
+    ctx.arc(
+      this.pos[0], this.pos[1], this.radius, 0, 2 * Math.PI, true
+    );
+    ctx.fill();
   }
 
   positionSetter() {
