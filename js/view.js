@@ -22,6 +22,23 @@ class RoboPongView {
     }
   }
 
+  keyPressHandler(e) {
+    if (e.keyCode == 32) {
+      if (this.robo_pong.play === true) {
+        this.robo_pong.play = false;
+      } else {
+        this.robo_pong.play = true;
+      }
+    }
+
+    if (e.keyCode == 13) {
+      if (this.robo_pong.gamePlay === false) {
+        this.robo_pong.gamePlay = true;
+        this.robo_pong.play = false;
+      }
+    }
+  }
+
   keyUpHandler(e) {
     if(e.keyCode == 40) {
       this.robo_pong.upPressed = false;
@@ -36,52 +53,18 @@ class RoboPongView {
     }
   }
 
-  //
-  // bindKeyHandlers() {
-  //   const paddles = this.paddles;
-  //   paddles.forEach(paddle => {
-  //     if (paddle.type === 'L') {
-  //       Object.keys(RoboPongView.LEFT).forEach(k => {
-  //         const move = RoboPongView.LEFT[k];
-  //         key(k, () => {
-  //           paddle.move(k);
-  //         });
-  //       });
-  //     } else {
-  //       Object.keys(RoboPongView.RIGHT).forEach(k => {
-  //         const move = RoboPongView.RIGHT[k];
-  //         key(k ,() => {
-  //           paddle.move(k);
-  //         });
-  //       });
-  //     }
-  //   });
-  // }
-
   start() {
     document.addEventListener("keydown", this.keyDownHandler.bind(this), false);
     document.addEventListener("keyup", this.keyUpHandler.bind(this), false);
-
-    requestAnimationFrame(this.animate.bind(this));
+    document.addEventListener("keypress", this.keyPressHandler.bind(this), false);
+    requestAnimationFrame(this.animate.bind(this)) ;
   }
 
   animate() {
-    // let timeDelta = time - this.lastTime;
     this.robo_pong.draw(this.ctx);
-    // this.lastTime = time;
 
     requestAnimationFrame(this.animate.bind(this));
   }
 }
-//
-// RoboPongView.LEFT = {
-//   w: [0, 1],
-//   s: [0, -1]
-// };
-//
-// RoboPongView.RIGHT = {
-//   u: [0, 1],
-//   d: [0, -1]
-// };
 
 module.exports = RoboPongView;

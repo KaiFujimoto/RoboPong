@@ -5,11 +5,27 @@ class Ball {
       y: 250,
     };
     this.vel = {
-      vx: 5,
-      vy: 2,
+      vx: 7,
+      vy: 3,
     };
-    this.radius = 25;
+    this.radius = 10;
     this.color = '#B22222';
+  }
+
+  xPos() {
+    return this.pos.x;
+  }
+
+  yPos() {
+    return this.pos.y;
+  }
+
+  xVel() {
+    return this.vel.vx;
+  }
+
+  yVel() {
+    return this.vel.vy;
   }
 
   draw(ctx) {
