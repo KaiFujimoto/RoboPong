@@ -7,51 +7,62 @@ class RoboPongView {
   }
 
   keyDownHandler(e) {
-    if(e.keyCode == 40) {
-      this.robo_pong.upPressed = true;
-    } else if(e.keyCode == 38) {
-      this.robo_pong.downPressed = true;
-    }
+    switch (e.keyCode) {
+      case (40):
+        this.robo_pong.upPressed = true;
+        break;
 
-    if(e.keyCode == 83) {
-      this.robo_pong.imPressed = true;
-    } else if(e.keyCode == 87) {
-      this.robo_pong.dePressed = true;
+      case (38):
+        this.robo_pong.downPressed = true;
+        break;
+
+      case (83):
+        this.robo_pong.imPressed = true;
+        break;
+
+      case (87):
+        this.robo_pong.dePressed = true;
+        break;
     }
   }
 
   keyPressHandler(e) {
-    if (e.keyCode == 32) {
-      if (this.robo_pong.play === true) {
-        this.robo_pong.play = false;
-      } else {
-        this.robo_pong.play = true;
-      }
-    }
+    switch (e.keyCode) {
+      case (50):
+        this.robo_pong.keyPressHandler(50);
+        break;
 
-    if (e.keyCode == 13) {
-      if (this.robo_pong.gamePlay === false) {
-        this.robo_pong.gamePlay = true;
-        this.robo_pong.play = false;
-      }
+      case (49):
+        this.robo_pong.keyPressHandler(49);
+        break;
+
+      case (32):
+        this.robo_pong.keyPressHandler(32);
+        break;
+
+      case (13):
+        this.robo_pong.keyPressHandler(13);
+        break;
     }
   }
 
   keyUpHandler(e) {
-    if(e.keyCode == 40) {
-      this.robo_pong.upPressed = false;
-    } else if(e.keyCode == 38) {
-      this.robo_pong.downPressed = false;
-    }
+    switch (e.keyCode) {
+      case (40):
+        this.robo_pong.upPressed = false;
+        break;
 
-    if(e.keyCode == 83) {
-      this.robo_pong.imPressed = false;
-    } else if(e.keyCode == 87) {
-      this.robo_pong.dePressed = false;
-    }
+      case (38):
+        this.robo_pong.downPressed = false;
+        break;
 
-    if(e.keyCode == 80) {
-      this.robo_pong.playSensei();
+      case (83):
+        this.robo_pong.imPressed = false;
+        break;
+
+      case (87):
+        this.robo_pong.dePressed = false;
+        break;
     }
   }
 

@@ -11,7 +11,7 @@ class RoboPong {
     this.leftPaddle = new Left();
     this.rightPaddle = new Right();
     this.ball = new Ball();
-    this.sensei = new Sensei(this.ball);
+    this.sensei = new Sensei(this.ball, this);
     this.player1 = 0;
     this.player2 = 0;
     this.upPressed = false;
@@ -29,10 +29,6 @@ class RoboPong {
   replace() {
     this.ball = new Ball();
     this.gameOngoing = true;
-  }
-
-  playSensei() {
-
   }
 
   win(player) {
@@ -84,8 +80,43 @@ class RoboPong {
     this.rightPaddle.isCollidedWith(this.ball);
   }
 
-  checkKeyPress() {
-    if (this.play && this.gamePlay) {
+  keyPressHandler(eKeyCode) {
+    switch (eKeyCode) {
+      case (50):
+        if (this.play === false) {
+          this.leftPaddle = new Left();
+          this.rightPaddle = new Right();
+          this.play = true;
+        }
+        break;
+
+      case (49):
+        if (this.play === false) {
+          this.leftPaddle = new Left();
+          this.rightPaddle = new Sensei(this.ball, this);
+          this.play = true;
+        }
+        break;
+
+      case (32):
+        this.play = false;
+        break;
+
+      case (13):
+        if (this.gamePlay === false) {
+          this.gamePlay = true;
+          this.play = false;
+        }
+        return this.play;
+    }
+  }
+
+  _inGame() {
+    return (this.play && this.gamePlay);
+  }
+
+  keyControlsToPaddleMovement() {
+    if (this._inGame()) {
       if (this.upPressed && this.rightPaddle.posY() < this.rightPaddle.paddleBounds(this.dimY)) {
         this.rightPaddle.moveUp();
       }
@@ -105,13 +136,16 @@ class RoboPong {
   playGame(ctx) {
     this.draw(ctx);
     this.updateGame();
+    if (this.play) {
+      this.sensei.defend();
+    }
   }
 
   updateGame() {
     this.checkOutOfBounds();
     this.score();
     this.checkHitPaddle();
-    this.checkKeyPress();
+    this.keyControlsToPaddleMovement();
   }
 
   draw(ctx) {
@@ -139,7 +173,6 @@ class RoboPong {
     }
 
     this.leftPaddle.draw(ctx);
-    // if else statement
     this.rightPaddle.draw(ctx);
   }
 

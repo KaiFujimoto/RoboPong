@@ -80,7 +80,7 @@ class RoboPong {
     this.leftPaddle = new Left();
     this.rightPaddle = new Right();
     this.ball = new Ball();
-    this.sensei = new Sensei(this.ball);
+    this.sensei = new Sensei(this.ball, this);
     this.player1 = 0;
     this.player2 = 0;
     this.upPressed = false;
@@ -98,10 +98,6 @@ class RoboPong {
   replace() {
     this.ball = new Ball();
     this.gameOngoing = true;
-  }
-
-  playSensei() {
-
   }
 
   win(player) {
@@ -153,8 +149,43 @@ class RoboPong {
     this.rightPaddle.isCollidedWith(this.ball);
   }
 
-  checkKeyPress() {
-    if (this.play && this.gamePlay) {
+  keyPressHandler(eKeyCode) {
+    switch (eKeyCode) {
+      case (50):
+        if (this.play === false) {
+          this.leftPaddle = new Left();
+          this.rightPaddle = new Right();
+          this.play = true;
+        }
+        break;
+
+      case (49):
+        if (this.play === false) {
+          this.leftPaddle = new Left();
+          this.rightPaddle = new Sensei(this.ball, this);
+          this.play = true;
+        }
+        break;
+
+      case (32):
+        this.play = false;
+        break;
+
+      case (13):
+        if (this.gamePlay === false) {
+          this.gamePlay = true;
+          this.play = false;
+        }
+        return this.play;
+    }
+  }
+
+  _inGame() {
+    return (this.play && this.gamePlay);
+  }
+
+  keyControlsToPaddleMovement() {
+    if (this._inGame()) {
       if (this.upPressed && this.rightPaddle.posY() < this.rightPaddle.paddleBounds(this.dimY)) {
         this.rightPaddle.moveUp();
       }
@@ -174,13 +205,16 @@ class RoboPong {
   playGame(ctx) {
     this.draw(ctx);
     this.updateGame();
+    if (this.play) {
+      this.sensei.defend();
+    }
   }
 
   updateGame() {
     this.checkOutOfBounds();
     this.score();
     this.checkHitPaddle();
-    this.checkKeyPress();
+    this.keyControlsToPaddleMovement();
   }
 
   draw(ctx) {
@@ -208,7 +242,6 @@ class RoboPong {
     }
 
     this.leftPaddle.draw(ctx);
-    // if else statement
     this.rightPaddle.draw(ctx);
   }
 
@@ -429,18 +462,22 @@ module.exports = Ball;
 const Right = __webpack_require__(1);
 
 class Sensei {
-  constructor(rightPaddle, ball, roboPong) {
+  constructor(ball, roboPong) {
     this.paddle = new Right();
     this.ball = ball;
     this.roboPong = roboPong;
   }
 
+  draw(ctx) {
+    this.paddle.draw(ctx);
+  }
+
   defend() {
     if (this.ball.nextXPos() > this.roboPong.dimX / 2) {
       if (this.ball.nextYPos() > this.paddle.posY()) {
-        this.paddle.moveDown();
-      } else {
         this.paddle.moveUp();
+      } else {
+        this.paddle.moveDown();
       }
     }
   }
@@ -462,51 +499,62 @@ class RoboPongView {
   }
 
   keyDownHandler(e) {
-    if(e.keyCode == 40) {
-      this.robo_pong.upPressed = true;
-    } else if(e.keyCode == 38) {
-      this.robo_pong.downPressed = true;
-    }
+    switch (e.keyCode) {
+      case (40):
+        this.robo_pong.upPressed = true;
+        break;
 
-    if(e.keyCode == 83) {
-      this.robo_pong.imPressed = true;
-    } else if(e.keyCode == 87) {
-      this.robo_pong.dePressed = true;
+      case (38):
+        this.robo_pong.downPressed = true;
+        break;
+
+      case (83):
+        this.robo_pong.imPressed = true;
+        break;
+
+      case (87):
+        this.robo_pong.dePressed = true;
+        break;
     }
   }
 
   keyPressHandler(e) {
-    if (e.keyCode == 32) {
-      if (this.robo_pong.play === true) {
-        this.robo_pong.play = false;
-      } else {
-        this.robo_pong.play = true;
-      }
-    }
+    switch (e.keyCode) {
+      case (50):
+        this.robo_pong.keyPressHandler(50);
+        break;
 
-    if (e.keyCode == 13) {
-      if (this.robo_pong.gamePlay === false) {
-        this.robo_pong.gamePlay = true;
-        this.robo_pong.play = false;
-      }
+      case (49):
+        this.robo_pong.keyPressHandler(49);
+        break;
+
+      case (32):
+        this.robo_pong.keyPressHandler(32);
+        break;
+
+      case (13):
+        this.robo_pong.keyPressHandler(13);
+        break;
     }
   }
 
   keyUpHandler(e) {
-    if(e.keyCode == 40) {
-      this.robo_pong.upPressed = false;
-    } else if(e.keyCode == 38) {
-      this.robo_pong.downPressed = false;
-    }
+    switch (e.keyCode) {
+      case (40):
+        this.robo_pong.upPressed = false;
+        break;
 
-    if(e.keyCode == 83) {
-      this.robo_pong.imPressed = false;
-    } else if(e.keyCode == 87) {
-      this.robo_pong.dePressed = false;
-    }
+      case (38):
+        this.robo_pong.downPressed = false;
+        break;
 
-    if(e.keyCode == 80) {
-      this.robo_pong.playSensei();
+      case (83):
+        this.robo_pong.imPressed = false;
+        break;
+
+      case (87):
+        this.robo_pong.dePressed = false;
+        break;
     }
   }
 
