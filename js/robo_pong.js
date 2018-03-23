@@ -1,6 +1,7 @@
 const Right = require('./right');
 const Left = require('./left');
 const Ball = require("./ball");
+const Sensei = require("./sensei");
 
 class RoboPong {
   constructor() {
@@ -10,6 +11,7 @@ class RoboPong {
     this.leftPaddle = new Left();
     this.rightPaddle = new Right();
     this.ball = new Ball();
+    this.sensei = new Sensei(this.ball);
     this.player1 = 0;
     this.player2 = 0;
     this.upPressed = false;
@@ -27,6 +29,10 @@ class RoboPong {
   replace() {
     this.ball = new Ball();
     this.gameOngoing = true;
+  }
+
+  playSensei() {
+
   }
 
   win(player) {
@@ -96,13 +102,33 @@ class RoboPong {
     }
   }
 
-  draw(ctx) {
+  playGame(ctx) {
+    this.draw(ctx);
+    this.updateGame();
+  }
 
+  updateGame() {
+    this.checkOutOfBounds();
+    this.score();
+    this.checkHitPaddle();
+    this.checkKeyPress();
+  }
+
+  draw(ctx) {
+    // draw field
     ctx.beginPath();
     ctx.clearRect(0, 0, this.dimX, this.dimY);
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(0, 0, this.dimX, this.dimY);
-
+    ctx.fill();
+    // draw line
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(this.dimX/2, 0);
+    ctx.lineTo(this.dimX/2, this.dimY);
+    ctx.closePath();
+    ctx.stroke();
+    // draw the ball
     this.ball.draw(ctx);
     if (this.play && this.gamePlay) {
       this.winner = '';
@@ -112,12 +138,8 @@ class RoboPong {
       this.reset();
     }
 
-    this.checkOutOfBounds();
-    this.score();
-    this.checkHitPaddle();
-    this.checkKeyPress();
-
     this.leftPaddle.draw(ctx);
+    // if else statement
     this.rightPaddle.draw(ctx);
   }
 
