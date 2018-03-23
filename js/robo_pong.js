@@ -1,5 +1,6 @@
-const Right = require('./right');
-const Left = require('./left');
+
+
+const Paddle = require('./paddle_main');
 const Ball = require("./ball");
 
 class RoboPong {
@@ -7,8 +8,8 @@ class RoboPong {
     this.dimX = 800;
     this.dimY = 500;
     this.backgroundColor = "#000000";
-    this.leftPaddle = new Left();
-    this.rightPaddle = new Right();
+    this.leftPaddle = new Paddle({type: "L"});
+    this.rightPaddle = new Paddle({type: "R"});
     this.ball = new Ball();
     this.player1 = 0;
     this.player2 = 0;

@@ -1,18 +1,16 @@
-const Right = require('./right');
+const Paddle = require('./paddle_main');
 
-class Sensei {
-  constructor(rightPaddle, ball, roboPong) {
-    this.paddle = new Right();
-    this.ball = ball;
-    this.roboPong = roboPong;
+class Sensei extends Paddle {
+  constructor(options = {}) {
+    super(options);
   }
 
   defend() {
     if (this.ball.nextXPos() > this.roboPong.dimX / 2) {
       if (this.ball.nextYPos() > this.paddle.posY()) {
-        this.paddle.moveDown();
-      } else {
         this.paddle.moveUp();
+      } else {
+        this.paddle.moveDown();
       }
     }
   }
