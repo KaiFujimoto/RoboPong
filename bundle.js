@@ -60,17 +60,17 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Right = __webpack_require__(3);
+const Right = __webpack_require__(1);
 const Left = __webpack_require__(4);
 const Ball = __webpack_require__(5);
-const Sensei = __webpack_require__(7);
+const Sensei = __webpack_require__(6);
 
 class RoboPong {
   constructor() {
@@ -226,6 +226,37 @@ module.exports = RoboPong;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Paddle = __webpack_require__(2);
+
+class Right extends Paddle {
+  constructor(options = {}) {
+    options.pos = options.pos || [750, 250];
+    options.color = options.color || '#FFC0CB';
+    super(options);
+  }
+
+  isCollidedWith(ball) {
+    const ballX = ball.nextXPos();
+    const ballY = ball.nextYPos();
+    const rightPaddleX = this.pos[0];
+    const rightPaddleY = this.pos[1];
+
+    if ((ballX + (ball.radius) > rightPaddleX) &&
+    (ballX + (ball.radius) < (rightPaddleX + this.dim[0])) &&
+    (ballY + (ball.radius) > rightPaddleY) &&
+    (ballY < (rightPaddleY + this.dim[1] + (ball.radius)))) {
+       ball.goLeft();
+    }
+  }
+}
+
+module.exports = Right;
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports) {
 
 class Paddle {
@@ -268,11 +299,11 @@ module.exports = Paddle;
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const RoboPong = __webpack_require__(0);
-const RoboPongView = __webpack_require__(6);
+const RoboPongView = __webpack_require__(7);
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvasEl = document.getElementById("robopong");
@@ -287,41 +318,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Paddle = __webpack_require__(1);
-
-class Right extends Paddle {
-  constructor(options = {}) {
-    options.pos = options.pos || [750, 250];
-    options.color = options.color || '#FFC0CB';
-    super(options);
-  }
-
-  isCollidedWith(ball) {
-    const ballX = ball.nextXPos();
-    const ballY = ball.nextYPos();
-    const rightPaddleX = this.pos[0];
-    const rightPaddleY = this.pos[1];
-
-    if ((ballX + (ball.radius) > rightPaddleX) &&
-    (ballX + (ball.radius) < (rightPaddleX + this.dim[0])) &&
-    (ballY + (ball.radius) > rightPaddleY) &&
-    (ballY < (rightPaddleY + this.dim[1] + (ball.radius)))) {
-       ball.goLeft();
-    }
-  }
-}
-
-module.exports = Right;
-
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Paddle = __webpack_require__(1);
+const Paddle = __webpack_require__(2);
 
 class Left extends Paddle {
   constructor(options = {}) {
@@ -426,6 +426,33 @@ module.exports = Ball;
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const Right = __webpack_require__(1);
+
+class Sensei {
+  constructor(rightPaddle, ball, roboPong) {
+    this.paddle = new Right();
+    this.ball = ball;
+    this.roboPong = roboPong;
+  }
+
+  defend() {
+    if (this.ball.nextXPos() > this.roboPong.dimX / 2) {
+      if (this.ball.nextYPos() > this.paddle.posY()) {
+        this.paddle.moveDown();
+      } else {
+        this.paddle.moveUp();
+      }
+    }
+  }
+}
+
+module.exports = Sensei;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
 const RoboPong = __webpack_require__(0);
 
 class RoboPongView {
@@ -502,36 +529,6 @@ class RoboPongView {
 module.exports = RoboPongView;
 
 
-<<<<<<< HEAD
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Right = __webpack_require__(3);
-
-class Sensei {
-  constructor(rightPaddle, ball, roboPong) {
-    this.paddle = new Right();
-    this.ball = ball;
-    this.roboPong = roboPong;
-  }
-
-  defend() {
-    if (this.ball.nextXPos() > this.roboPong.dimX / 2) {
-      if (this.ball.nextYPos() > this.paddle.posY()) {
-        this.paddle.moveDown();
-      } else {
-        this.paddle.moveUp();
-      }
-    }
-  }
-}
-
-module.exports = Sensei;
-
-
-=======
->>>>>>> development
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map
