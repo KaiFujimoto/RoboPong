@@ -80,18 +80,18 @@ class RoboPong {
 
   checkKeyPress() {
     if (this.play && this.gamePlay) {
-      if (this.upPressed && this.rightPaddle.pos[1] < this.dimY - this.rightPaddle.dim[1]) {
-        this.rightPaddle.pos[1] += 7;
+      if (this.upPressed && this.rightPaddle.posY() < this.rightPaddle.paddleBounds(this.dimY)) {
+        this.rightPaddle.moveUp();
       }
-      else if (this.downPressed && this.rightPaddle.pos[1] > 0) {
-        this.rightPaddle.pos[1] -= 7;
+      else if (this.downPressed && this.rightPaddle.posY() > 0) {
+        this.rightPaddle.moveDown();
       }
 
-      if (this.imPressed && this.leftPaddle.pos[1] < this.dimY - this.leftPaddle.dim[1]) {
-        this.leftPaddle.pos[1] += 7;
+      if (this.imPressed && this.leftPaddle.posY() < this.leftPaddle.paddleBounds(this.dimY)) {
+        this.leftPaddle.moveUp();
       }
-      else if (this.dePressed && this.leftPaddle.pos[1] > 0) {
-        this.leftPaddle.pos[1] -= 7;
+      else if (this.dePressed && this.leftPaddle.posY() > 0) {
+        this.leftPaddle.moveDown();
       }
     }
   }
