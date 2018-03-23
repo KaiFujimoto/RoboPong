@@ -60,15 +60,15 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Right = __webpack_require__(10);
-const Left = __webpack_require__(11);
+const Right = __webpack_require__(3);
+const Left = __webpack_require__(4);
 const Ball = __webpack_require__(5);
 
 class RoboPong {
@@ -203,13 +203,54 @@ module.exports = RoboPong;
 
 
 /***/ }),
-/* 1 */,
-/* 2 */,
-/* 3 */
+/* 1 */
+/***/ (function(module, exports) {
+
+class Paddle {
+  constructor(options) {
+    this.pos = options.pos;
+    this.dim = [25, 85];
+    this.color = options.color;
+  }
+
+  posX() {
+    return this.pos[0];
+  }
+
+  posY() {
+    return this.pos[1];
+  }
+
+  moveUp() {
+    this.pos[1] += 7;
+  }
+
+  moveDown() {
+    this.pos[1] -= 7;
+  }
+
+  paddleBounds(dim) {
+    return dim - this.dim[1];
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.pos[0], this.pos[1], this.dim[0], this.dim[1]);
+    ctx.closePath();
+  }
+
+}
+
+module.exports = Paddle;
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const RoboPong = __webpack_require__(0);
-const RoboPongView = __webpack_require__(7);
+const RoboPongView = __webpack_require__(6);
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvasEl = document.getElementById("robopong");
@@ -224,7 +265,68 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /***/ }),
-/* 4 */,
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Paddle = __webpack_require__(1);
+
+class Right extends Paddle {
+  constructor(options = {}) {
+    options.pos = options.pos || [750, 250];
+    options.color = options.color || '#FFC0CB';
+    super(options);
+  }
+
+  isCollidedWith(ball) {
+    const ballX = ball.nextXPos();
+    const ballY = ball.nextYPos();
+    const rightPaddleX = this.pos[0];
+    const rightPaddleY = this.pos[1];
+
+    if ((ballX + (ball.radius) > rightPaddleX) &&
+    (ballX + (ball.radius) < (rightPaddleX + this.dim[0])) &&
+    (ballY + (ball.radius) > rightPaddleY) &&
+    (ballY < (rightPaddleY + this.dim[1] + (ball.radius)))) {
+       ball.goLeft();
+    }
+  }
+}
+
+module.exports = Right;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Paddle = __webpack_require__(1);
+
+class Left extends Paddle {
+  constructor(options = {}) {
+    options.pos = options.pos || [25, 250];
+    options.color = options.color || '#00FFFF';
+    super(options);
+  }
+
+  isCollidedWith(ball) {
+    const ballX = ball.nextXPos();
+    const ballY = ball.nextYPos();
+    const leftPaddleX = this.pos[0];
+    const leftPaddleY = this.pos[1];
+
+    if (((ballX - (ball.radius)) > leftPaddleX) &&
+    ((ballX - (ball.radius)) < (leftPaddleX + this.dim[0])) &&
+    (ballY + (ball.radius) > leftPaddleY - (ball.radius)) &&
+    (ballY - (ball.radius) < (leftPaddleY + this.dim[1] + (ball.radius)))) {
+      ball.goRight();
+    }
+  }
+}
+
+module.exports = Left;
+
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports) {
 
@@ -299,8 +401,7 @@ module.exports = Ball;
 
 
 /***/ }),
-/* 6 */,
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const RoboPong = __webpack_require__(0);
@@ -375,112 +476,6 @@ class RoboPongView {
 }
 
 module.exports = RoboPongView;
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-class Paddle {
-  constructor(options) {
-    this.pos = options.pos;
-    this.dim = [25, 85];
-    this.color = options.color;
-  }
-
-  posX() {
-    return this.pos[0];
-  }
-
-  posY() {
-    return this.pos[1];
-  }
-
-  moveUp() {
-    this.pos[1] += 7;
-  }
-
-  moveDown() {
-    this.pos[1] -= 7;
-  }
-
-  paddleBounds(dim) {
-    return dim - this.dim[1];
-  }
-
-  draw(ctx) {
-    ctx.beginPath();
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.pos[0], this.pos[1], this.dim[0], this.dim[1]);
-    ctx.closePath();
-  }
-
-}
-
-module.exports = Paddle;
-
-
-/***/ }),
-/* 9 */,
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Paddle = __webpack_require__(8);
-
-class Right extends Paddle {
-  constructor(options = {}) {
-    options.pos = options.pos || [750, 250];
-    options.color = options.color || '#FFC0CB';
-    super(options);
-  }
-
-  isCollidedWith(ball) {
-    const ballX = ball.nextXPos();
-    const ballY = ball.nextYPos();
-    const rightPaddleX = this.pos[0];
-    const rightPaddleY = this.pos[1];
-
-    if ((ballX + (ball.radius) > rightPaddleX) &&
-    (ballX + (ball.radius) < (rightPaddleX + this.dim[0])) &&
-    (ballY + (ball.radius) > rightPaddleY) &&
-    (ballY < (rightPaddleY + this.dim[1] + (ball.radius)))) {
-       ball.goLeft();
-    }
-  }
-}
-
-module.exports = Right;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Paddle = __webpack_require__(8);
-
-class Left extends Paddle {
-  constructor(options = {}) {
-    options.pos = options.pos || [25, 250];
-    options.color = options.color || '#00FFFF';
-    super(options);
-  }
-
-  isCollidedWith(ball) {
-    const ballX = ball.nextXPos();
-    const ballY = ball.nextYPos();
-    const leftPaddleX = this.pos[0];
-    const leftPaddleY = this.pos[1];
-
-    if (((ballX - (ball.radius)) > leftPaddleX) &&
-    ((ballX - (ball.radius)) < (leftPaddleX + this.dim[0])) &&
-    (ballY + (ball.radius) > leftPaddleY - (ball.radius)) &&
-    (ballY - (ball.radius) < (leftPaddleY + this.dim[1] + (ball.radius)))) {
-      ball.goRight();
-    }
-  }
-}
-
-module.exports = Left;
 
 
 /***/ })
