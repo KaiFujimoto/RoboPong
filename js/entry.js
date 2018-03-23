@@ -3,8 +3,8 @@ const RoboPongView = require("./view");
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvasEl = document.getElementById("robopong");
-  canvasEl.width = RoboPong.DIM_X;
-  canvasEl.height = RoboPong.DIM_Y;
+  canvasEl.width = 800;
+  canvasEl.height = 500;
   canvasEl.fillStyle = RoboPong.BG_COLOR;
 
   const ctx = canvasEl.getContext("2d");

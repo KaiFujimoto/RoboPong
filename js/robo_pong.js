@@ -1,11 +1,12 @@
 const Right = require('./right');
 const Left = require('./left');
 const Ball = require("./ball");
-// const Util = require("./util");
 
 class RoboPong {
   constructor() {
-    // this.paddle = [];
+    this.dimX = 800;
+    this.dimY = 500;
+    this.backgroundColor = "#000000";
     this.leftPaddle = new Left();
     this.rightPaddle = new Right();
     this.ball = new Ball();
@@ -46,12 +47,11 @@ class RoboPong {
   }
 
   checkOutOfBounds() {
-    // VV this can be refactored into nextYPos
-    if (this.ball.nextYPos() > (RoboPong.DIM_Y - this.ball.radius) ||
+    if (this.ball.nextYPos() > (this.dimY - this.ball.radius) ||
         this.ball.nextYPos() < this.ball.radius) {
       this.ball.vel.vy = -this.ball.vel.vy;
     }
-    if (this.ball.nextXPos() > RoboPong.DIM_X) {
+    if (this.ball.nextXPos() > this.dimX) {
       setTimeout(() => this.replace(), 1000);
       this.player1 += 1;
       this.win(this.player1);
@@ -64,38 +64,20 @@ class RoboPong {
   }
 
   checkHitPaddle() {
-    const ballX = this.ball.nextXPos();
-    const ballY = this.ball.nextYPos();
-    const leftPaddleX = this.leftPaddle.pos[0];
-    const leftPaddleY = this.leftPaddle.pos[1];
-    const rightPaddleX = this.rightPaddle.pos[0];
-    const rightPaddleY = this.rightPaddle.pos[1];
-
-    if (((ballX - (this.ball.radius * 0.8)) > leftPaddleX) &&
-    ((ballX - (this.ball.radius * 0.8)) < (leftPaddleX + this.leftPaddle.dim[0])) &&
-    (ballY + (this.ball.radius * 0.6) > leftPaddleY - (this.ball.radius * 0.6)) &&
-    (ballY - (this.ball.radius * 0.8) < (leftPaddleY + this.leftPaddle.dim[1] + (this.ball.radius * 0.8)))) {
-      this.ball.goRight();
-    }
-
-    if ((ballX + (this.ball.radius * 0.8) > rightPaddleX) &&
-    (ballX + (this.ball.radius * 0.8) < (rightPaddleX + this.rightPaddle.dim[0])) &&
-    (ballY + (this.ball.radius * 0.8) > rightPaddleY) &&
-    (ballY < (rightPaddleY + this.rightPaddle.dim[1] + (this.ball.radius * 0.8)))) {
-       this.ball.goLeft();
-    }
+    this.leftPaddle.isCollidedWith(this.ball);
+    this.rightPaddle.isCollidedWith(this.ball);
   }
 
   checkKeyPress() {
     if (this.play && this.gamePlay) {
-      if (this.upPressed && this.rightPaddle.pos[1] < RoboPong.DIM_Y - this.rightPaddle.dim[1]) {
+      if (this.upPressed && this.rightPaddle.pos[1] < this.dimY - this.rightPaddle.dim[1]) {
         this.rightPaddle.pos[1] += 7;
       }
       else if (this.downPressed && this.rightPaddle.pos[1] > 0) {
         this.rightPaddle.pos[1] -= 7;
       }
 
-      if (this.imPressed && this.leftPaddle.pos[1] < RoboPong.DIM_Y - this.leftPaddle.dim[1]) {
+      if (this.imPressed && this.leftPaddle.pos[1] < this.dimY - this.leftPaddle.dim[1]) {
         this.leftPaddle.pos[1] += 7;
       }
       else if (this.dePressed && this.leftPaddle.pos[1] > 0) {
@@ -111,9 +93,9 @@ class RoboPong {
     score.innerText = `Player 1: ${this.player1 % 10}, Player 2: ${this.player2 % 10} Winner: ${this.winner}`;
 
     ctx.beginPath();
-    ctx.clearRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
-    ctx.fillStyle = RoboPong.BG_COLOR;
-    ctx.fillRect(0, 0, RoboPong.DIM_X, RoboPong.DIM_Y);
+    ctx.clearRect(0, 0, this.dimX, this.dimY);
+    ctx.fillStyle = this.backgroundColor;
+    ctx.fillRect(0, 0, this.dimX, this.dimY);
 
     this.ball.draw(ctx);
     if (this.play && this.gamePlay) {
@@ -140,11 +122,5 @@ class RoboPong {
     this.player2 = 0;
   }
 }
-
-
-RoboPong.BG_COLOR = "#000000";
-RoboPong.DIM_X = 800;
-RoboPong.DIM_Y = 500;
-RoboPong.FPS = 32;
 
 module.exports = RoboPong;
