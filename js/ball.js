@@ -12,6 +12,10 @@ class Ball {
     this.color = '#B22222';
   }
 
+  radius() {
+    return this.radius;
+  }
+
   xPos() {
     return this.pos.x;
   }
@@ -26,6 +30,22 @@ class Ball {
 
   yVel() {
     return this.vel.vy;
+  }
+
+  goRight() {
+    this.vel.vx = Math.abs(this.vel.vx);
+  }
+
+  goLeft() {
+    this.vel.vx = Math.abs(this.vel.vx) * -1;
+  }
+
+  nextYPos() {
+    return this.pos.y + this.vel.vy;
+  }
+
+  nextXPos() {
+    return this.pos.x + this.vel.vx;
   }
 
   draw(ctx) {

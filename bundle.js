@@ -75,8 +75,8 @@ const Ball = __webpack_require__(5);
 class RoboPong {
   constructor() {
     // this.paddle = [];
-    this.left = new Left();
-    this.right = new Right();
+    this.leftPaddle = new Left();
+    this.rightPaddle = new Right();
     this.ball = new Ball();
     this.player1 = 0;
     this.player2 = 0;
@@ -116,16 +116,16 @@ class RoboPong {
 
   checkOutOfBounds() {
     // VV this can be refactored into nextYPos
-    if (this.ball.pos.y + this.ball.vel.vy > (RoboPong.DIM_Y - this.ball.radius) ||
-        this.ball.pos.y + this.ball.vel.vy < this.ball.radius) {
+    if (this.ball.nextYPos() > (RoboPong.DIM_Y - this.ball.radius) ||
+        this.ball.nextYPos() < this.ball.radius) {
       this.ball.vel.vy = -this.ball.vel.vy;
     }
-    if (this.ball.pos.x + this.ball.vel.vx > RoboPong.DIM_X) {
+    if (this.ball.nextXPos() > RoboPong.DIM_X) {
       setTimeout(() => this.replace(), 1000);
       this.player1 += 1;
       this.win(this.player1);
     }
-    if (this.ball.pos.x + this.ball.vel.vx < 0) {
+    if (this.ball.nextXPos() < 0) {
       setTimeout(() => this.replace(), 1000);
       this.player2 += 1;
       this.win(this.player2);
@@ -133,42 +133,42 @@ class RoboPong {
   }
 
   checkHitPaddle() {
-    const ballX = this.ball.pos.x + this.ball.vel.vx;
-    const ballY = this.ball.pos.y + this.ball.vel.vy;
-    const leftX = this.left.pos[0];
-    const leftY = this.left.pos[1];
-    const rightX = this.right.pos[0];
-    const rightY = this.right.pos[1];
+    const ballX = this.ball.nextXPos();
+    const ballY = this.ball.nextYPos();
+    const leftPaddleX = this.leftPaddle.pos[0];
+    const leftPaddleY = this.leftPaddle.pos[1];
+    const rightPaddleX = this.rightPaddle.pos[0];
+    const rightPaddleY = this.rightPaddle.pos[1];
 
-    if (((ballX - (this.ball.radius * 0.8)) > leftX) && // if the ball is on the right of the left border of the left bar
-    ((ballX - (this.ball.radius * 0.8)) < (leftX + this.left.dim[0])) && // if the ball is on the left of the right border of the left bar
-    (ballY + (this.ball.radius * 0.6) > leftY - (this.ball.radius * 0.6)) && // if the ballY is larger than the top border
-    (ballY - (this.ball.radius * 0.8) < (leftY + this.left.dim[1] + (this.ball.radius * 0.8)))) { // if ballY is less than the bottom border
-      this.ball.vel.vx = -this.ball.vel.vx;
+    if (((ballX - (this.ball.radius * 0.8)) > leftPaddleX) &&
+    ((ballX - (this.ball.radius * 0.8)) < (leftPaddleX + this.leftPaddle.dim[0])) &&
+    (ballY + (this.ball.radius * 0.6) > leftPaddleY - (this.ball.radius * 0.6)) &&
+    (ballY - (this.ball.radius * 0.8) < (leftPaddleY + this.leftPaddle.dim[1] + (this.ball.radius * 0.8)))) {
+      this.ball.goRight();
     }
 
-    if ((ballX + (this.ball.radius * 0.8) > rightX) &&
-    (ballX + (this.ball.radius * 0.8) < (rightX + this.right.dim[0])) &&
-    (ballY + (this.ball.radius * 0.8) > rightY) &&
-    (ballY < (rightY + this.right.dim[1] + (this.ball.radius * 0.8)))) {
-       this.ball.vel.vx = -this.ball.vel.vx;
+    if ((ballX + (this.ball.radius * 0.8) > rightPaddleX) &&
+    (ballX + (this.ball.radius * 0.8) < (rightPaddleX + this.rightPaddle.dim[0])) &&
+    (ballY + (this.ball.radius * 0.8) > rightPaddleY) &&
+    (ballY < (rightPaddleY + this.rightPaddle.dim[1] + (this.ball.radius * 0.8)))) {
+       this.ball.goLeft();
     }
   }
 
   checkKeyPress() {
     if (this.play && this.gamePlay) {
-      if (this.upPressed && this.right.pos[1] < RoboPong.DIM_Y - this.right.dim[1]) {
-        this.right.pos[1] += 7;
+      if (this.upPressed && this.rightPaddle.pos[1] < RoboPong.DIM_Y - this.rightPaddle.dim[1]) {
+        this.rightPaddle.pos[1] += 7;
       }
-      else if (this.downPressed && this.right.pos[1] > 0) {
-        this.right.pos[1] -= 7;
+      else if (this.downPressed && this.rightPaddle.pos[1] > 0) {
+        this.rightPaddle.pos[1] -= 7;
       }
 
-      if (this.imPressed && this.left.pos[1] < RoboPong.DIM_Y - this.left.dim[1]) {
-        this.left.pos[1] += 7;
+      if (this.imPressed && this.leftPaddle.pos[1] < RoboPong.DIM_Y - this.leftPaddle.dim[1]) {
+        this.leftPaddle.pos[1] += 7;
       }
-      else if (this.dePressed && this.left.pos[1] > 0) {
-        this.left.pos[1] -= 7;
+      else if (this.dePressed && this.leftPaddle.pos[1] > 0) {
+        this.leftPaddle.pos[1] -= 7;
       }
     }
   }
@@ -197,14 +197,14 @@ class RoboPong {
     this.checkHitPaddle();
     this.checkKeyPress();
 
-    this.left.draw(ctx);
-    this.right.draw(ctx);
+    this.leftPaddle.draw(ctx);
+    this.rightPaddle.draw(ctx);
   }
 
   reset() {
     this.ball = new Ball();
-    this.left = new Left();
-    this.right = new Right();
+    this.leftPaddle = new Left();
+    this.rightPaddle = new Right();
     this.player1 = 0;
     this.player2 = 0;
   }
@@ -259,6 +259,10 @@ class Ball {
     this.color = '#B22222';
   }
 
+  radius() {
+    return this.radius;
+  }
+
   xPos() {
     return this.pos.x;
   }
@@ -273,6 +277,22 @@ class Ball {
 
   yVel() {
     return this.vel.vy;
+  }
+
+  goRight() {
+    this.vel.vx = Math.abs(this.vel.vx);
+  }
+
+  goLeft() {
+    this.vel.vx = Math.abs(this.vel.vx) * -1;
+  }
+
+  nextYPos() {
+    return this.pos.y + this.vel.vy;
+  }
+
+  nextXPos() {
+    return this.pos.x + this.vel.vx;
   }
 
   draw(ctx) {
@@ -383,7 +403,7 @@ class Paddle {
     ctx.closePath();
   }
 
-  
+
 }
 
 module.exports = Paddle;

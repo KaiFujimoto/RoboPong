@@ -12,7 +12,7 @@ class Paddle {
     ctx.closePath();
   }
 
-  
+
 }
 
 module.exports = Paddle;
