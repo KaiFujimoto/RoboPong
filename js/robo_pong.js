@@ -19,17 +19,19 @@ class RoboPong {
     this.play = false;
     this.winner = '';
     this.gamePlay = true;
+    this.gameOngoing = true;
 
     this.updateScore();
   }
 
   replace() {
     this.ball = new Ball();
+    this.gameOngoing = true;
   }
 
   win(player) {
 
-    if (player >= 305) {
+    if (player >= 5) {
       if (player === this.player1) {
         this.winner = "player1 wins!";
       } else {
@@ -43,23 +45,31 @@ class RoboPong {
   }
 
   updateScore() {
+    const score = document.getElementById("players");
 
+    score.innerText = `Player 1: ${this.player1}, Player 2: ${this.player2} Winner: ${this.winner}`;
   }
 
   checkOutOfBounds() {
-    if (this.ball.nextYPos() > (this.dimY - this.ball.radius) ||
-        this.ball.nextYPos() < this.ball.radius) {
-      this.ball.vel.vy = -this.ball.vel.vy;
-    }
+    this.ball.checkBoarders(this.dimY);
+  }
+
+  score() {
     if (this.ball.nextXPos() > this.dimX) {
       setTimeout(() => this.replace(), 1000);
-      this.player1 += 1;
-      this.win(this.player1);
+      if (this.gameOngoing) {
+        this.player1 += 1;
+        this.win(this.player1);
+        this.gameOngoing = false;
+      }
     }
     if (this.ball.nextXPos() < 0) {
       setTimeout(() => this.replace(), 1000);
-      this.player2 += 1;
-      this.win(this.player2);
+      if (this.gameOngoing) {
+        this.player2 += 1;
+        this.win(this.player2);
+        this.gameOngoing = false;
+      }
     }
   }
 
@@ -88,10 +98,6 @@ class RoboPong {
 
   draw(ctx) {
 
-    const score = document.getElementById("players");
-
-    score.innerText = `Player 1: ${this.player1 % 10}, Player 2: ${this.player2 % 10} Winner: ${this.winner}`;
-
     ctx.beginPath();
     ctx.clearRect(0, 0, this.dimX, this.dimY);
     ctx.fillStyle = this.backgroundColor;
@@ -107,6 +113,7 @@ class RoboPong {
     }
 
     this.checkOutOfBounds();
+    this.score();
     this.checkHitPaddle();
     this.checkKeyPress();
 

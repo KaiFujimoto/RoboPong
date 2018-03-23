@@ -48,6 +48,13 @@ class Ball {
     return this.pos.x + this.vel.vx;
   }
 
+  checkBoarders(dim) {
+    if (this.nextYPos() > (dim - this.radius) ||
+        this.nextYPos() < this.radius) {
+      this.vel.vy = -this.vel.vy;
+    }
+  }
+
   draw(ctx) {
     ctx.beginPath();
     ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI * 2, false);

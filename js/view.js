@@ -61,6 +61,8 @@ class RoboPongView {
   }
 
   animate() {
+
+    this.robo_pong.updateScore();
     this.robo_pong.draw(this.ctx);
 
     requestAnimationFrame(this.animate.bind(this));
