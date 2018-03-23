@@ -502,6 +502,7 @@ class RoboPongView {
 module.exports = RoboPongView;
 
 
+<<<<<<< HEAD
 /***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -529,6 +530,8 @@ class Sensei {
 module.exports = Sensei;
 
 
+=======
+>>>>>>> development
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map
