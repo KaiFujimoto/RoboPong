@@ -1,7 +1,6 @@
-const Sensei = require('./sensei.js');
+const Sensei = require('./sensei');
 const Paddle = require('./paddle_main');
 const Ball = require("./ball");
-const Sensei = require("./sensei");
 
 class RoboPong {
   constructor() {
@@ -11,7 +10,6 @@ class RoboPong {
     this.leftPaddle = new Paddle({type: "L"});
     this.rightPaddle = new Paddle({type: "R"});
     this.ball = new Ball();
-    this.sensei = new Sensei(this.ball, this);
     this.player1 = 0;
     this.player2 = 0;
     this.upPressed = false;
@@ -83,35 +81,6 @@ class RoboPong {
   }
 
   keyPressHandler(eKeyCode) {
-    switch (eKeyCode) {
-      case (50):
-        if (this.play === false) {
-          this.leftPaddle = new Left();
-          this.rightPaddle = new Right();
-          this.play = true;
-        }
-        break;
-
-      case (49):
-        if (this.play === false) {
-          this.leftPaddle = new Left();
-          this.rightPaddle = new Sensei(this.ball, this);
-          this.play = true;
-        }
-        break;
-
-      case (32):
-        this.play = false;
-        break;
-
-      case (13):
-        if (this.gamePlay === false) {
-          this.gamePlay = true;
-          this.play = false;
-        }
-        return this.play;
-    }
-  }
       switch (eKeyCode) {
         case (50):
           if (this.play === false) {
@@ -185,7 +154,6 @@ class RoboPong {
       this.sensei.defend();
     }
   }
-  }
 
   updateGame() {
     this.checkOutOfBounds();
@@ -199,15 +167,6 @@ class RoboPong {
       this.leftPaddle.defend(this.ball);
       this.rightPaddle.defend(this.ball);
     }
-  }
-
-  draw(ctx) {
-
-  updateGame() {
-    this.checkOutOfBounds();
-    this.score();
-    this.checkHitPaddle();
-    this.keyControlsToPaddleMovement();
   }
 
   draw(ctx) {
