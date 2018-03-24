@@ -82,10 +82,7 @@ class RoboPongView {
 
     this.robo_pong.updateScore();
     this.robo_pong.playGame(this.ctx);
-<<<<<<< HEAD
-=======
 
->>>>>>> development
     requestAnimationFrame(this.animate.bind(this));
   }
 }

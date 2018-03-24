@@ -83,7 +83,6 @@ class RoboPong {
   }
 
   keyPressHandler(eKeyCode) {
-<<<<<<< HEAD
     switch (eKeyCode) {
       case (50):
         if (this.play === false) {
@@ -113,7 +112,6 @@ class RoboPong {
         return this.play;
     }
   }
-=======
       switch (eKeyCode) {
         case (50):
           if (this.play === false) {
@@ -157,16 +155,11 @@ class RoboPong {
           return this.play;
       }
     }
->>>>>>> development
 
   _inGame() {
     return (this.play && this.gamePlay);
   }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> development
   keyControlsToPaddleMovement() {
     if (this._inGame()) {
       if (this.upPressed && this.rightPaddle.posY() < this.rightPaddle.paddleBounds(this.dimY)) {
@@ -188,12 +181,10 @@ class RoboPong {
   playGame(ctx) {
     this.draw(ctx);
     this.updateGame();
-<<<<<<< HEAD
     if (this.play) {
       this.sensei.defend();
     }
   }
-=======
   }
 
   updateGame() {
@@ -211,7 +202,6 @@ class RoboPong {
   }
 
   draw(ctx) {
->>>>>>> development
 
   updateGame() {
     this.checkOutOfBounds();
