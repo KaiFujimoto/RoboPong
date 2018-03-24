@@ -28,11 +28,11 @@ class Paddle {
   }
 
   moveUp() {
-    this.pos[1] += 7;
+    this.pos[1] += 10;
   }
 
   moveDown() {
-    this.pos[1] -= 7;
+    this.pos[1] -= 10;
   }
 
   paddleBounds(dim) {

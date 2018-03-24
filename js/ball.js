@@ -5,8 +5,8 @@ class Ball {
       y: 250,
     };
     this.vel = {
-      vx: 7,
-      vy: 3,
+      vx: 10,
+      vy: 4,
     };
     this.radius = 10;
     this.color = '#B22222';
@@ -38,6 +38,14 @@ class Ball {
 
   goLeft() {
     this.vel.vx = Math.abs(this.vel.vx) * -1;
+  }
+
+  goDown() {
+    this.vel.vy = Math.abs(this.vel.vy) + 5;
+  }
+
+  goUp() {
+    this.vel.vy = Math.abs(this.vel.vy) * -1 + 5;
   }
 
   nextYPos() {
