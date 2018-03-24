@@ -1,4 +1,4 @@
-const Sensei = require('./sensei');
+const Sensei = require('./sensei.js');
 const Paddle = require('./paddle_main');
 const Ball = require("./ball");
 
@@ -129,6 +129,7 @@ class RoboPong {
     return (this.play && this.gamePlay);
   }
 
+
   keyControlsToPaddleMovement() {
     if (this._inGame()) {
       if (this.upPressed && this.rightPaddle.posY() < this.rightPaddle.paddleBounds(this.dimY)) {
@@ -150,9 +151,6 @@ class RoboPong {
   playGame(ctx) {
     this.draw(ctx);
     this.updateGame();
-    if (this.play) {
-      this.sensei.defend();
-    }
   }
 
   updateGame() {
@@ -170,20 +168,12 @@ class RoboPong {
   }
 
   draw(ctx) {
-    // draw field
+
     ctx.beginPath();
     ctx.clearRect(0, 0, this.dimX, this.dimY);
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(0, 0, this.dimX, this.dimY);
-    ctx.fill();
-    // draw line
-    ctx.strokeStyle = "white";
-    ctx.beginPath();
-    ctx.moveTo(this.dimX/2, 0);
-    ctx.lineTo(this.dimX/2, this.dimY);
-    ctx.closePath();
-    ctx.stroke();
-    // draw the ball
+
     this.ball.draw(ctx);
     if (this.play && this.gamePlay) {
       this.winner = '';

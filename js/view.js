@@ -4,6 +4,8 @@ class RoboPongView {
   constructor(robo_pong, ctx) {
     this.ctx = ctx;
     this.robo_pong = robo_pong;
+    this.left = this.robo_pong.left;
+    this.right = this.robo_pong.right;
   }
 
   keyDownHandler(e) {
@@ -74,7 +76,6 @@ class RoboPongView {
     document.addEventListener("keydown", this.keyDownHandler.bind(this), false);
     document.addEventListener("keyup", this.keyUpHandler.bind(this), false);
     document.addEventListener("keypress", this.keyPressHandler.bind(this), false);
-
     requestAnimationFrame(this.animate.bind(this)) ;
   }
 

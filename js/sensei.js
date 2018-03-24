@@ -5,6 +5,7 @@ class Sensei extends Paddle {
     super(options);
     this.dimX = game.dimX;
     this.dimY = game.dimY;
+
   }
 
   defend(ball) {
