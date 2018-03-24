@@ -1,5 +1,5 @@
-const Right = require('./right');
-const Left = require('./left');
+const Sensei = require('./sensei.js');
+const Paddle = require('./paddle_main');
 const Ball = require("./ball");
 const Sensei = require("./sensei");
 
@@ -8,8 +8,8 @@ class RoboPong {
     this.dimX = 800;
     this.dimY = 500;
     this.backgroundColor = "#000000";
-    this.leftPaddle = new Left();
-    this.rightPaddle = new Right();
+    this.leftPaddle = new Paddle({type: "L"});
+    this.rightPaddle = new Paddle({type: "R"});
     this.ball = new Ball();
     this.sensei = new Sensei(this.ball, this);
     this.player1 = 0;
@@ -22,6 +22,8 @@ class RoboPong {
     this.winner = '';
     this.gamePlay = true;
     this.gameOngoing = true;
+    this.botPlaying = false;
+    this.bot2Playing = false;
 
     this.updateScore();
   }
@@ -81,6 +83,7 @@ class RoboPong {
   }
 
   keyPressHandler(eKeyCode) {
+<<<<<<< HEAD
     switch (eKeyCode) {
       case (50):
         if (this.play === false) {
@@ -110,11 +113,60 @@ class RoboPong {
         return this.play;
     }
   }
+=======
+      switch (eKeyCode) {
+        case (50):
+          if (this.play === false) {
+            this.leftPaddle = new Paddle({type: 'L'});
+            this.rightPaddle = new Paddle({type: 'R'});
+            this.play = true;
+          }
+          break;
+
+        case (49):
+          if (this.play === false) {
+            this.leftPaddle = new Paddle({type: 'L'});
+            this.rightPaddle = new Sensei({type: 'R'}, this);
+            this.play = true;
+            this.botPlaying = true;
+          }
+          break;
+
+        case (51):
+          if (this.play === false) {
+            this.leftPaddle = new Sensei({type: 'L'}, this);
+            this.rightPaddle = new Sensei({type: 'R'}, this);
+            this.play = true;
+            this.bot2Playing = true;
+          }
+          break;
+
+        case (32):
+          if (this.play === false) {
+            this.play = true;
+          } else {
+            this.play = false;
+          }
+          break;
+
+        case (13):
+          if (this.gamePlay === false) {
+            this.gamePlay = true;
+            this.play = false;
+          }
+          return this.play;
+      }
+    }
+>>>>>>> development
 
   _inGame() {
     return (this.play && this.gamePlay);
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> development
   keyControlsToPaddleMovement() {
     if (this._inGame()) {
       if (this.upPressed && this.rightPaddle.posY() < this.rightPaddle.paddleBounds(this.dimY)) {
@@ -136,10 +188,30 @@ class RoboPong {
   playGame(ctx) {
     this.draw(ctx);
     this.updateGame();
+<<<<<<< HEAD
     if (this.play) {
       this.sensei.defend();
     }
   }
+=======
+  }
+
+  updateGame() {
+    this.checkOutOfBounds();
+    this.score();
+    this.checkHitPaddle();
+    this.keyControlsToPaddleMovement();
+    if (this.botPlaying && this.play) {
+      this.rightPaddle.defend(this.ball);
+    }
+    if (this.bot2Playing && this.play) {
+      this.leftPaddle.defend(this.ball);
+      this.rightPaddle.defend(this.ball);
+    }
+  }
+
+  draw(ctx) {
+>>>>>>> development
 
   updateGame() {
     this.checkOutOfBounds();
@@ -178,8 +250,8 @@ class RoboPong {
 
   reset() {
     this.ball = new Ball();
-    this.leftPaddle = new Left();
-    this.rightPaddle = new Right();
+    this.leftPaddle = new Paddle({type: "L"});
+    this.rightPaddle = new Paddle({type: "R"});
     this.player1 = 0;
     this.player2 = 0;
   }

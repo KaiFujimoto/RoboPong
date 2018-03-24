@@ -36,6 +36,10 @@ class RoboPongView {
         this.robo_pong.keyPressHandler(49);
         break;
 
+      case (51):
+        this.robo_pong.keyPressHandler(51);
+        break;
+
       case (32):
         this.robo_pong.keyPressHandler(32);
         break;
@@ -78,6 +82,10 @@ class RoboPongView {
 
     this.robo_pong.updateScore();
     this.robo_pong.playGame(this.ctx);
+<<<<<<< HEAD
+=======
+
+>>>>>>> development
     requestAnimationFrame(this.animate.bind(this));
   }
 }
