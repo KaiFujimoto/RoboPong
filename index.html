@@ -1,15 +1,45 @@
 <html>
   <head>
     <title>RoboPong</title>
+
+    <link rel="stylesheet" href="./css/pong.css">
+    <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
   </head>
 
   <body>
-    <h1>RoboPong (there was an attempt)</h1>
-    <p>Press Space to play</p>
-    <p>Press Enter then Space to play again</p>
-    <p id="players"></p>
-    <canvas id="robopong"></canvas>
+    <section>
+      <h1>RoboPong</h1>
+        <p>
+          <img src="_depreciated/1.png">
+          Single Player
+        </p>
+        <p>
+          <img src="_depreciated/2.png">
+          Multi Player
+        </p>
+        <p>
+          <img src="_depreciated/3.png">
+          Ai
+        </p>
+
+        <p>
+          <p>play again</p>
+          <img class="enter" src="_depreciated/enter.png">
+          <img class="enter" src="_depreciated/space.png">
+        </p>
+
+    </section>
+    <section>
+      <h2>
+        <p id="players"></p>
+        <p id="winner"></p>
+      </h2>
+      <canvas id="robopong"></canvas>
+    </section>
 
     <script type="application/javascript" src="./bundle.js"></script>
+    <footer>
+      
+    </footer>
   </body>
 </html>

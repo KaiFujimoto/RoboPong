@@ -104,9 +104,9 @@ class RoboPong {
 
     if (player >= 5) {
       if (player === this.player1) {
-        this.winner = "player1 wins!";
+        this.winner = "Player1 Wins!";
       } else {
-        this.winner = "player2 wins!";
+        this.winner = "Player2 Wins!";
       }
       this.play = false;
       this.gamePlay = false;
@@ -118,7 +118,11 @@ class RoboPong {
   updateScore() {
     const score = document.getElementById("players");
 
-    score.innerText = `Player 1: ${this.player1}, Player 2: ${this.player2} Winner: ${this.winner}`;
+    score.innerText = `Player 1: ${this.player1}, Player 2: ${this.player2}`;
+
+    const winner = document.getElementById("winner");
+
+    winner.innerText = `Winner: ${this.winner}`;
   }
 
   checkOutOfBounds() {
@@ -242,6 +246,15 @@ class RoboPong {
     ctx.clearRect(0, 0, this.dimX, this.dimY);
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(0, 0, this.dimX, this.dimY);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.strokeStyle = "white";
+    ctx.moveTo(400, 0);
+    ctx.lineTo(400, 500);
+    ctx.lineWidth = 10;
+    ctx.setLineDash([0, 5, 10, 15]);
+    ctx.stroke();
 
     this.ball.draw(ctx);
     if (this.play && this.gamePlay) {
