@@ -63,7 +63,7 @@ class Paddle {
     (ballY - (ball.radius) < (paddleY + this.dim[1] + (ball.radius)))) {
       ball.goRight();
     }
-
+ 
   }
 
 }
