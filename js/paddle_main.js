@@ -2,7 +2,7 @@ class Paddle {
   constructor(options) {
     this.type = options.type;
     this.pos = null;
-    this.dim = [25, 85];
+    this.dim = [25, 84];
     this.color = "white";
 
     this.givePos();
@@ -63,7 +63,7 @@ class Paddle {
     (ballY - (ball.radius) < (paddleY + this.dim[1] + (ball.radius)))) {
       ball.goRight();
     }
- 
+
   }
 
 }

@@ -5,11 +5,23 @@ class Ball {
       y: 250,
     };
     this.vel = {
-      vx: 10,
-      vy: 4,
+      vx: null,
+      vy: null,
     };
     this.radius = 10;
     this.color = '#B22222';
+    this.startDirectionGenerator();
+  }
+
+  startDirectionGenerator() {
+    const num = Math.round(Math.random());
+    if (num === 1) {
+      this.vel.vy = 4;
+      this.vel.vx = -10;
+    } else {
+      this.vel.vy = -4;
+      this.vel.vx = 10;
+    }
   }
 
   radius() {
