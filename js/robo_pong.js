@@ -41,6 +41,16 @@ class RoboPong {
       }
       this.play = false;
       this.gamePlay = false;
+
+      const winner = document.getElementById("winner");
+
+      winner.classList.toggle('cows');
+      winner.innerText = `Winner: ${this.winner}`;
+      const node = document.createElement("p");
+      const text = document.createTextNode(`Press Enter to select Mode and Play again`);
+      node.appendChild(text);
+      winner.appendChild(node);
+
       this.updateScore();
     }
 
@@ -51,9 +61,6 @@ class RoboPong {
 
     score.innerText = `Player 1: ${this.player1}, Player 2: ${this.player2}`;
 
-    const winner = document.getElementById("winner");
-
-    winner.innerText = `Winner: ${this.winner}`;
   }
 
   checkOutOfBounds() {
@@ -122,6 +129,10 @@ class RoboPong {
 
         case (13):
           if (this.gamePlay === false) {
+            const winner = document.getElementById("winner");
+
+            winner.classList.toggle('cows');
+            winner.innerText = `Winner:`;
             this.gamePlay = true;
             this.play = false;
           }
