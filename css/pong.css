@@ -79,18 +79,18 @@ p {
 
 h1 {
   align-self: center;
-  font-size: 40px;
+  font-size: 50px;
   font-weight: bold;
   color: red;
 }
 
 img {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   margin-right: 10px;
 }
 
 .enter {
-  width: 150px;
-  height: 50px;
+  width: 130px;
+  height: 40px;
 }

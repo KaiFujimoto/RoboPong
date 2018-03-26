@@ -137,25 +137,25 @@ class RoboPong {
   keyControlsToPaddleMovement() {
     if (this._inGame()) {
       if (this.upPressed && this.rightPaddle.posY() < this.rightPaddle.paddleBounds(this.dimY)) {
-        // if (!this.botPlaying && !this.bot2Playing) {
+        if (!this.botPlaying && !this.bot2Playing) {
           this.rightPaddle.moveUp();
-        // }
+        }
       }
       else if (this.downPressed && this.rightPaddle.posY() > 0) {
-        // if (!this.botPlaying && !this.bot2Playing) {
+        if (!this.botPlaying && !this.bot2Playing) {
           this.rightPaddle.moveDown();
-        // }
+        }
       }
 
       if (this.imPressed && this.leftPaddle.posY() < this.leftPaddle.paddleBounds(this.dimY)) {
-        // if (!this.bot2Playing) {
+        if (!this.bot2Playing) {
           this.leftPaddle.moveUp();
-        // }
+        }
       }
       else if (this.dePressed && this.leftPaddle.posY() > 0) {
-        // if (!this.bot2Playing) {
+        if (!this.bot2Playing) {
           this.leftPaddle.moveDown();
-        // }
+        }
       }
     }
   }
