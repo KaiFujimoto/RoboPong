@@ -118,3 +118,11 @@ div p {
 .cows {
   display: block;
 }
+
+.mebar {
+  display: flex;
+  justify-content: space-around;
+  font-size: 25px;
+  color: red;
+  align-items: flex-start;
+}
