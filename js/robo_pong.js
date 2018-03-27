@@ -18,7 +18,7 @@ class RoboPong {
     this.dePressed = false;
     this.play = false;
     this.winner = '';
-    this.gamePlay = true;
+    this.gamePlay = false;
     this.gameOngoing = true;
     this.botPlaying = false;
     this.bot2Playing = false;
@@ -94,28 +94,31 @@ class RoboPong {
   keyPressHandler(eKeyCode) {
       switch (eKeyCode) {
         case (50):
-          if (this.play === false) {
+          if (this.play === false && this.gamePlay === false) {
             this.leftPaddle = new Paddle({type: 'L'});
             this.rightPaddle = new Paddle({type: 'R'});
             this.play = true;
+            this.gamePlay = true;
           }
           break;
 
         case (49):
-          if (this.play === false) {
+          if (this.play === false && this.gamePlay === false) {
             this.leftPaddle = new Paddle({type: 'L'});
             this.rightPaddle = new Sensei({type: 'R'}, this);
             this.play = true;
             this.botPlaying = true;
+            this.gamePlay = true;
           }
           break;
 
         case (51):
-          if (this.play === false) {
+          if (this.play === false && this.gamePlay === false) {
             this.leftPaddle = new Sensei({type: 'L'}, this);
             this.rightPaddle = new Sensei({type: 'R'}, this);
             this.play = true;
             this.bot2Playing = true;
+            this.gamePlay = true;
           }
           break;
 
