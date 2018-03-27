@@ -205,7 +205,6 @@ class RoboPong {
 
             winner.classList.toggle('cows');
             winner.innerText = `Winner:`;
-            this.gamePlay = true;
             this.play = false;
           }
           return this.play;
