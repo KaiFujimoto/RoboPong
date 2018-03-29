@@ -5,10 +5,10 @@ class Paddle {
     this.dim = [25, 84];
     this.color = "white";
 
-    this.givePos();
+    this.setPos();
   }
 
-  givePos() {
+  setPos() {
     switch (this.type) {
       case "L":
         this.pos = [25, 250];

@@ -60,16 +60,199 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 59);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 118:
 /***/ (function(module, exports, __webpack_require__) {
 
-const Sensei = __webpack_require__(3);
-const Paddle = __webpack_require__(1);
-const Ball = __webpack_require__(4);
+const RoboPong = __webpack_require__(27);
+
+class RoboPongView {
+  constructor(robo_pong, ctx) {
+    this.ctx = ctx;
+    this.robo_pong = robo_pong;
+    this.left = this.robo_pong.left;
+    this.right = this.robo_pong.right;
+  }
+
+  keyDownHandler(e) {
+    switch (e.keyCode) {
+      case (40):
+        this.robo_pong.upPressed = true;
+        break;
+
+      case (38):
+        this.robo_pong.downPressed = true;
+        break;
+
+      case (83):
+        this.robo_pong.imPressed = true;
+        break;
+
+      case (87):
+        this.robo_pong.dePressed = true;
+        break;
+    }
+  }
+
+  keyPressHandler(e) {
+    switch (e.keyCode) {
+
+      case (49):
+      this.robo_pong.keyPressHandler(49);
+      break;
+
+      case (50):
+        this.robo_pong.keyPressHandler(50);
+        break;
+
+      case (51):
+        this.robo_pong.keyPressHandler(51);
+        break;
+
+      case (52):
+        this.robo_pong.keyPressHandler(52);
+        break;
+
+      case (32):
+        this.robo_pong.keyPressHandler(32);
+        break;
+
+      case (13):
+        this.robo_pong.keyPressHandler(13);
+        break;
+    }
+  }
+
+  keyUpHandler(e) {
+    switch (e.keyCode) {
+      case (40):
+        this.robo_pong.upPressed = false;
+        break;
+
+      case (38):
+        this.robo_pong.downPressed = false;
+        break;
+
+      case (83):
+        this.robo_pong.imPressed = false;
+        break;
+
+      case (87):
+        this.robo_pong.dePressed = false;
+        break;
+    }
+  }
+
+  start() {
+    document.addEventListener("keydown", this.keyDownHandler.bind(this), false);
+    document.addEventListener("keyup", this.keyUpHandler.bind(this), false);
+    document.addEventListener("keypress", this.keyPressHandler.bind(this), false);
+    requestAnimationFrame(this.animate.bind(this)) ;
+  }
+
+  animate() {
+
+    this.robo_pong.updateScore();
+    this.robo_pong.playGame(this.ctx);
+
+    requestAnimationFrame(this.animate.bind(this));
+  }
+}
+
+module.exports = RoboPongView;
+
+
+/***/ }),
+
+/***/ 14:
+/***/ (function(module, exports) {
+
+class Paddle {
+  constructor(options) {
+    this.type = options.type;
+    this.pos = null;
+    this.dim = [25, 84];
+    this.color = "white";
+
+    this.setPos();
+  }
+
+  setPos() {
+    switch (this.type) {
+      case "L":
+        this.pos = [25, 250];
+        break;
+      case "R":
+        this.pos = [750, 250];
+        break;
+    }
+  }
+
+  posX() {
+    return this.pos[0];
+  }
+
+  posY() {
+    return this.pos[1];
+  }
+
+  moveUp() {
+    this.pos[1] += 10;
+  }
+
+  moveDown() {
+    this.pos[1] -= 10;
+  }
+
+  paddleBounds(dim) {
+    return dim - this.dim[1];
+  }
+
+  draw(ctx) {
+    ctx.beginPath();
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.pos[0], this.pos[1], this.dim[0], this.dim[1]);
+    ctx.closePath();
+  }
+
+  isCollidedWith(ball) {
+    const ballX = ball.nextXPos();
+    const ballY = ball.nextYPos();
+    const paddleX = this.posX();
+    const paddleY = this.posY();
+
+    if ((ballX + (ball.radius) > paddleX) &&
+    (ballX + (ball.radius) < (paddleX + this.dim[0])) &&
+    (ballY + (ball.radius) > paddleY) &&
+    (ballY < (paddleY + this.dim[1] + (ball.radius)))) {
+       ball.goLeft();
+    } else if (((ballX - (ball.radius)) > paddleX) &&
+    ((ballX - (ball.radius)) < (paddleX + this.dim[0])) &&
+    (ballY + (ball.radius) > paddleY - (ball.radius)) &&
+    (ballY - (ball.radius) < (paddleY + this.dim[1] + (ball.radius)))) {
+      ball.goRight();
+    }
+
+  }
+
+}
+
+module.exports = Paddle;
+
+
+/***/ }),
+
+/***/ 27:
+/***/ (function(module, exports, __webpack_require__) {
+
+const Sensei = __webpack_require__(60);
+const Paddle = __webpack_require__(14);
+const Ball = __webpack_require__(61);
+// const LearnBotChan = require("./learnbot");
 
 class RoboPong {
   constructor() {
@@ -91,6 +274,7 @@ class RoboPong {
     this.gameOngoing = true;
     this.botPlaying = false;
     this.bot2Playing = false;
+    this.learnBotPlaying = false;
 
     this.updateScore();
   }
@@ -142,6 +326,8 @@ class RoboPong {
       if (this.gameOngoing) {
         this.player1 += 1;
         this.win(this.player1);
+        this.leftPaddle.setPos();
+        this.rightPaddle.setPos();
         this.gameOngoing = false;
       }
     }
@@ -150,6 +336,8 @@ class RoboPong {
       if (this.gameOngoing) {
         this.player2 += 1;
         this.win(this.player2);
+        this.leftPaddle.setPos();
+        this.rightPaddle.setPos();
         this.gameOngoing = false;
       }
     }
@@ -162,21 +350,22 @@ class RoboPong {
 
   keyPressHandler(eKeyCode) {
       switch (eKeyCode) {
+
+        case (49):
+        if (this.play === false && this.gamePlay === false) {
+          this.leftPaddle = new Paddle({type: 'L'});
+          this.rightPaddle = new Sensei({type: 'R'}, this);
+          this.play = true;
+          this.botPlaying = true;
+          this.gamePlay = true;
+        }
+        break;
+
         case (50):
           if (this.play === false && this.gamePlay === false) {
             this.leftPaddle = new Paddle({type: 'L'});
             this.rightPaddle = new Paddle({type: 'R'});
             this.play = true;
-            this.gamePlay = true;
-          }
-          break;
-
-        case (49):
-          if (this.play === false && this.gamePlay === false) {
-            this.leftPaddle = new Paddle({type: 'L'});
-            this.rightPaddle = new Sensei({type: 'R'}, this);
-            this.play = true;
-            this.botPlaying = true;
             this.gamePlay = true;
           }
           break;
@@ -190,6 +379,16 @@ class RoboPong {
             this.gamePlay = true;
           }
           break;
+
+        // case (52):
+        //   if (this.play === false && this.gamePlay === false) {
+        //     this.leftPaddle = new LearnBotChan({type: 'L'}, this);
+        //     this.rightPaddle = new Sensei({type: 'R'}, this);
+        //     this.play = true;
+        //     this.learnBotPlaying = true;
+        //     this.gamePlay = true;
+        //   }
+        //   break;
 
         case (32):
           if (this.play === false) {
@@ -259,6 +458,12 @@ class RoboPong {
       this.leftPaddle.defend(this.ball);
       this.rightPaddle.defend(this.ball);
     }
+    if (this.learnBotPlaying && this.play) {
+      if (this.ball.nextXPos() < this.dimX / 2) {
+        this.leftPaddle.defendMove(this.ball);
+      }
+      this.rightPaddle.defend(this.ball);
+    }
   }
 
   draw(ctx) {
@@ -303,88 +508,12 @@ module.exports = RoboPong;
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports) {
 
-class Paddle {
-  constructor(options) {
-    this.type = options.type;
-    this.pos = null;
-    this.dim = [25, 84];
-    this.color = "white";
-
-    this.givePos();
-  }
-
-  givePos() {
-    switch (this.type) {
-      case "L":
-        this.pos = [25, 250];
-        break;
-      case "R":
-        this.pos = [750, 250];
-        break;
-    }
-  }
-
-  posX() {
-    return this.pos[0];
-  }
-
-  posY() {
-    return this.pos[1];
-  }
-
-  moveUp() {
-    this.pos[1] += 10;
-  }
-
-  moveDown() {
-    this.pos[1] -= 10;
-  }
-
-  paddleBounds(dim) {
-    return dim - this.dim[1];
-  }
-
-  draw(ctx) {
-    ctx.beginPath();
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.pos[0], this.pos[1], this.dim[0], this.dim[1]);
-    ctx.closePath();
-  }
-
-  isCollidedWith(ball) {
-    const ballX = ball.nextXPos();
-    const ballY = ball.nextYPos();
-    const paddleX = this.posX();
-    const paddleY = this.posY();
-
-    if ((ballX + (ball.radius) > paddleX) &&
-    (ballX + (ball.radius) < (paddleX + this.dim[0])) &&
-    (ballY + (ball.radius) > paddleY) &&
-    (ballY < (paddleY + this.dim[1] + (ball.radius)))) {
-       ball.goLeft();
-    } else if (((ballX - (ball.radius)) > paddleX) &&
-    ((ballX - (ball.radius)) < (paddleX + this.dim[0])) &&
-    (ballY + (ball.radius) > paddleY - (ball.radius)) &&
-    (ballY - (ball.radius) < (paddleY + this.dim[1] + (ball.radius)))) {
-      ball.goRight();
-    }
-
-  }
-
-}
-
-module.exports = Paddle;
-
-
-/***/ }),
-/* 2 */
+/***/ 59:
 /***/ (function(module, exports, __webpack_require__) {
 
-const RoboPong = __webpack_require__(0);
-const RoboPongView = __webpack_require__(5);
+const RoboPong = __webpack_require__(27);
+const RoboPongView = __webpack_require__(118);
 
 document.addEventListener("DOMContentLoaded", () => {
   const canvasEl = document.getElementById("robopong");
@@ -399,10 +528,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /***/ }),
-/* 3 */
+
+/***/ 60:
 /***/ (function(module, exports, __webpack_require__) {
 
-const Paddle = __webpack_require__(1);
+const Paddle = __webpack_require__(14);
 
 class Sensei extends Paddle {
   constructor(options = {}, game) {
@@ -427,7 +557,8 @@ module.exports = Sensei;
 
 
 /***/ }),
-/* 4 */
+
+/***/ 61:
 /***/ (function(module, exports) {
 
 class Ball {
@@ -520,103 +651,7 @@ class Ball {
 module.exports = Ball;
 
 
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const RoboPong = __webpack_require__(0);
-
-class RoboPongView {
-  constructor(robo_pong, ctx) {
-    this.ctx = ctx;
-    this.robo_pong = robo_pong;
-    this.left = this.robo_pong.left;
-    this.right = this.robo_pong.right;
-  }
-
-  keyDownHandler(e) {
-    switch (e.keyCode) {
-      case (40):
-        this.robo_pong.upPressed = true;
-        break;
-
-      case (38):
-        this.robo_pong.downPressed = true;
-        break;
-
-      case (83):
-        this.robo_pong.imPressed = true;
-        break;
-
-      case (87):
-        this.robo_pong.dePressed = true;
-        break;
-    }
-  }
-
-  keyPressHandler(e) {
-    switch (e.keyCode) {
-      case (50):
-        this.robo_pong.keyPressHandler(50);
-        break;
-
-      case (49):
-        this.robo_pong.keyPressHandler(49);
-        break;
-
-      case (51):
-        this.robo_pong.keyPressHandler(51);
-        break;
-
-      case (32):
-        this.robo_pong.keyPressHandler(32);
-        break;
-
-      case (13):
-        this.robo_pong.keyPressHandler(13);
-        break;
-    }
-  }
-
-  keyUpHandler(e) {
-    switch (e.keyCode) {
-      case (40):
-        this.robo_pong.upPressed = false;
-        break;
-
-      case (38):
-        this.robo_pong.downPressed = false;
-        break;
-
-      case (83):
-        this.robo_pong.imPressed = false;
-        break;
-
-      case (87):
-        this.robo_pong.dePressed = false;
-        break;
-    }
-  }
-
-  start() {
-    document.addEventListener("keydown", this.keyDownHandler.bind(this), false);
-    document.addEventListener("keyup", this.keyUpHandler.bind(this), false);
-    document.addEventListener("keypress", this.keyPressHandler.bind(this), false);
-    requestAnimationFrame(this.animate.bind(this)) ;
-  }
-
-  animate() {
-
-    this.robo_pong.updateScore();
-    this.robo_pong.playGame(this.ctx);
-
-    requestAnimationFrame(this.animate.bind(this));
-  }
-}
-
-module.exports = RoboPongView;
-
-
 /***/ })
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=bundle.js.map

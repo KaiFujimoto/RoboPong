@@ -30,16 +30,21 @@ class RoboPongView {
 
   keyPressHandler(e) {
     switch (e.keyCode) {
+
+      case (49):
+      this.robo_pong.keyPressHandler(49);
+      break;
+
       case (50):
         this.robo_pong.keyPressHandler(50);
         break;
 
-      case (49):
-        this.robo_pong.keyPressHandler(49);
-        break;
-
       case (51):
         this.robo_pong.keyPressHandler(51);
+        break;
+
+      case (52):
+        this.robo_pong.keyPressHandler(52);
         break;
 
       case (32):
